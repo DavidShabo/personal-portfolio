@@ -1,38 +1,114 @@
-.App {
-  text-align: center;
+/* Basic styles */
+body {
+  font-family: 'Arial', sans-serif; /* Or any other font you'd like */
+  margin: 0;
+  padding: 0;
+  background-color: #222; /* Dark background */
+  color: #fff; /* White text */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Home screen container */
+.home-screen {
+  display: flex;
+  justify-content: space-between;
+  height: 100vh;
+  padding: 2rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Left column styles */
+.left-column {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 2rem;
+}
+
+/* Top navigation styles */
+.top-nav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-link {
   color: white;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-.App-link {
-  color: #61dafb;
+.nav-link:hover {
+  color: #ff8c00; /* Change color on hover */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Header styles */
+.header h1 {
+  font-size: 2rem;
+}
+
+/* Sub-heading styles */
+.sub-heading {
+  font-size: 1.5rem;
+}
+
+/* Paragraph description */
+.description {
+  font-size: 1rem;
+  color: #ddd; /* Slightly lighter text color */
+}
+
+/* Button container */
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.contact-button, .learn-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.contact-button:hover, .learn-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Right column styles */
+.right-column {
+  width: 50%;
+  position: relative;
+}
+
+/* Page dots container on the far right */
+.page-dots-container {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Page dots styles */
+.page-dots ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dot-button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 0;
+  background-color: white;
+}
+
+.dot-button:hover {
+  background-color: #ff8c00;
 }

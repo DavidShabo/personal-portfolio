@@ -1,25 +1,26 @@
-import logo from './logo.svg';
+import React, { useState, Suspense } from 'react';
+import { useFBX } from '@react-three/drei';
+import BootGate from './BootGate';
+import LoadingScreen from './components/LoadingScreen';
+import HomeScreen from './components/HomeScreen'; 
 import './App.css';
 
-function App() {
+useFBX.preload('/models/blackhole/blackhole.fbx');
+
+export default function App() {
+  const [introDone, setIntroDone] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App min-h-screen w-full bg-black text-white font-main select-none">
+      <Suspense fallback={null}>
+        <BootGate fallback={null}>
+          {introDone ? (
+            <HomeScreen /> 
+          ) : (
+            <LoadingScreen onComplete={() => setIntroDone(true)} />
+          )}
+        </BootGate>
+      </Suspense>
     </div>
   );
 }
-
-export default App;
