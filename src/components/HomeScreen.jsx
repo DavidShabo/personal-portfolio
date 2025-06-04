@@ -1,6 +1,7 @@
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-
+import '../index.css';
+import '../App.css';
 
 function TopNav() {
   const links = ['About', 'Skills', 'Work', 'Projects', 'Contact', 'Resume'];
@@ -10,7 +11,7 @@ function TopNav() {
         {links.map((txt, idx) => (
           <li key={txt}>
             <a href={`#${txt.toLowerCase()}`} className="nav-link">
-              {`${idx}. ${txt}`}
+              {`${txt}`}
             </a>
           </li>
         ))}
@@ -18,7 +19,6 @@ function TopNav() {
     </nav>
   );
 }
-
 
 function PageDots({ sections = 6 }) {
   return (
@@ -34,7 +34,6 @@ function PageDots({ sections = 6 }) {
   );
 }
 
-
 function BlobPlaceholder() {
   return (
     <Canvas camera={{ position: [0, 0, 4], fov: 50 }} gl={{ alpha: true }}>
@@ -45,35 +44,34 @@ function BlobPlaceholder() {
 
 export default function HomeScreen() {
   return (
-    <section className="home-screen">
-      <div className="left-column">
-        <TopNav />
-        
-        <div id="Header" className="header">
-          <h1>David</h1>
+    <div style={{ fontFamily: "'Space Mono', monospace" }}>
+      <section className="home-screen">
+        <div className="left-column">
+          <TopNav />
+          
+          <div className="hero-content">
+            <p className="job-title">Software Developer</p>
+            
+            <div className="name-container">
+              <h1 className="hello-text">Hello I'm</h1>
+              <h1 className="name-text nebula-glow">David</h1>
+            </div>
+            
+            <p className="description">
+              Self‑taught programmer motivated by passion and personal projects. Expert at searching bugs on Google and quickly scanning the best StackOverflow answers.
+            </p>
+            
+            <div className="buttons">
+              <button className="contact-button">Contact Me</button>
+              <button className="learn-button">Learn More →</button>
+            </div>
+          </div>
         </div>
-        
-        <h2 className="sub-heading">Software Developer &nbsp;DEVELOPER</h2>
-        
-        <p className="description">
-          Self‑taught programmer motivated by passion and personal projects. Expert at searching bugs on Google and quickly scanning the best StackOverflow answers.
-        </p>
-        
-        <div className="buttons">
-          <button className="contact-button">Contact Me</button>
-          <button className="learn-button">Learn More →</button>
+
+        <div className="page-dots-container">
+          <PageDots />
         </div>
-      </div>
-
-      {}
-      <div className="right-column">
-        <BlobPlaceholder />
-      </div>
-
-      {}
-      <div className="page-dots-container">
-        <PageDots />
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
