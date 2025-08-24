@@ -1,4 +1,3 @@
-// SkyboxModel.jsx
 import React, { useRef, useEffect } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -29,12 +28,7 @@ const SkyboxModel = () => {
   });
 
   return (
-    <primitive
-      ref={modelRef}
-      object={scene}
-      scale={[10, 10, 10]}
-      position={[0, 0, 0]}
-    />
+    <primitive ref={modelRef} object={scene} scale={[10, 10, 10]} position={[0, 0, 0]} />
   );
 };
 

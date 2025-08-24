@@ -3,55 +3,35 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useFBX, OrbitControls, Stars } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Enhanced accretion disk with multiple rings
 function AccretionDisk() {
   const mesh = useRef();
   const mesh2 = useRef();
   const mesh3 = useRef();
   
   useFrame(({ clock }) => {
-    if (mesh.current) {
-      mesh.current.rotation.z = clock.getElapsedTime() * 0.25;
-    }
-    if (mesh2.current) {
-      mesh2.current.rotation.z = -clock.getElapsedTime() * 0.15;
-    }
-    if (mesh3.current) {
-      mesh3.current.rotation.z = clock.getElapsedTime() * 0.35;
-    }
+    if (mesh.current) mesh.current.rotation.z = clock.getElapsedTime() * 0.25;
+    if (mesh2.current) mesh2.current.rotation.z = -clock.getElapsedTime() * 0.15;
+    if (mesh3.current) mesh3.current.rotation.z = clock.getElapsedTime() * 0.35;
   });
   
   return (
     <group>
       <mesh ref={mesh} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <torusGeometry args={[0.32, 0.09, 32, 128]} />
-        <meshBasicMaterial
-          color={'#e0baff'}
-          transparent
-          opacity={0.45}
-        />
+        <meshBasicMaterial color={'#e0baff'} transparent opacity={0.45} />
       </mesh>
       <mesh ref={mesh2} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <torusGeometry args={[0.45, 0.06, 32, 128]} />
-        <meshBasicMaterial
-          color={'#00ff9d'}
-          transparent
-          opacity={0.3}
-        />
+        <meshBasicMaterial color={'#00ff9d'} transparent opacity={0.3} />
       </mesh>
       <mesh ref={mesh3} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <torusGeometry args={[0.58, 0.04, 32, 128]} />
-        <meshBasicMaterial
-          color={'#00fff7'}
-          transparent
-          opacity={0.25}
-        />
+        <meshBasicMaterial color={'#00fff7'} transparent opacity={0.25} />
       </mesh>
     </group>
   );
 }
 
-// Enhanced particle ring with more particles and effects
 function ParticleRing() {
   const group = useRef();
   const particles = Array.from({ length: 64 }).map((_, i) => {
@@ -61,9 +41,7 @@ function ParticleRing() {
   });
   
   useFrame(({ clock }) => {
-    if (group.current) {
-      group.current.rotation.y = clock.getElapsedTime() * 0.18;
-    }
+    if (group.current) group.current.rotation.y = clock.getElapsedTime() * 0.18;
   });
   
   return (
@@ -82,7 +60,6 @@ function ParticleRing() {
   );
 }
 
-// Floating debris particles
 function FloatingDebris() {
   const group = useRef();
   const debris = Array.from({ length: 20 }).map((_, i) => ({
@@ -121,7 +98,6 @@ function FloatingDebris() {
   );
 }
 
-// Energy field effect
 function EnergyField() {
   const mesh = useRef();
   
@@ -134,12 +110,7 @@ function EnergyField() {
   return (
     <mesh ref={mesh} position={[0, 0, 0]}>
       <sphereGeometry args={[1.2, 32, 32]} />
-      <meshBasicMaterial
-        color={'#00ff9d'}
-        transparent
-        opacity={0.1}
-        wireframe
-      />
+      <meshBasicMaterial color={'#00ff9d'} transparent opacity={0.1} wireframe />
     </mesh>
   );
 }
@@ -165,19 +136,13 @@ const BlackHoleModel = () => {
   useFrame(({ clock }) => {
     if (modelRef.current) {
       modelRef.current.rotation.y = clock.getElapsedTime() * 0.18;
-      modelRef.current.scale.x = 0.07 + Math.sin(clock.getElapsedTime() * 3) * 0.005;
-      modelRef.current.scale.y = 0.07 + Math.sin(clock.getElapsedTime() * 3) * 0.005;
-      modelRef.current.scale.z = 0.07 + Math.sin(clock.getElapsedTime() * 3) * 0.005;
+      const scale = 0.07 + Math.sin(clock.getElapsedTime() * 3) * 0.005;
+      modelRef.current.scale.set(scale, scale, scale);
     }
   });
   
   return (
-    <primitive 
-      ref={modelRef} 
-      object={blackhole} 
-      scale={[0.07, 0.07, 0.07]}
-      position={[0, 0, 0]} 
-    />
+    <primitive ref={modelRef} object={blackhole} scale={[0.07, 0.07, 0.07]} position={[0, 0, 0]} />
   );
 };
 
@@ -195,7 +160,6 @@ const VignetteOverlay = () => (
   }} />
 );
 
-// Loading text with typing effect
 const LoadingText = ({ text, show, delay = 0 }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -218,10 +182,7 @@ const LoadingText = ({ text, show, delay = 0 }) => {
       minHeight: '1.2em'
     }}>
       {displayText}
-      <span style={{
-        animation: 'blink 1s infinite',
-        marginLeft: '2px'
-      }}>|</span>
+      <span style={{ animation: 'blink 1s infinite', marginLeft: '2px' }}>|</span>
     </span>
   );
 };
@@ -254,7 +215,6 @@ const LoadingScreen = ({ onComplete }) => {
           return 100;
         }
         
-        // Update loading phase based on progress
         if (newProgress >= 20 && loadingPhase === 0) setLoadingPhase(1);
         if (newProgress >= 40 && loadingPhase === 1) setLoadingPhase(2);
         if (newProgress >= 60 && loadingPhase === 2) setLoadingPhase(3);
@@ -315,7 +275,6 @@ const LoadingScreen = ({ onComplete }) => {
       </Canvas>
       <VignetteOverlay />
       
-      {/* Loading Content */}
       <div style={{
         position: 'relative',
         zIndex: 1200,
@@ -331,7 +290,6 @@ const LoadingScreen = ({ onComplete }) => {
         justifyContent: 'center',
         pointerEvents: 'none',
       }}>
-        {/* Main Title */}
         <h2 style={{
           marginBottom: '1rem',
           fontSize: '1.8rem',
@@ -345,7 +303,6 @@ const LoadingScreen = ({ onComplete }) => {
           <LoadingText text="INITIALIZING PORTFOLIO" show={showText} />
         </h2>
         
-        {/* Loading Phase Text */}
         <div style={{
           marginBottom: '2rem',
           fontSize: '1rem',
@@ -357,7 +314,6 @@ const LoadingScreen = ({ onComplete }) => {
           <LoadingText text={loadingPhases[loadingPhase]} show={showText} delay={200} />
         </div>
         
-        {/* Progress Bar */}
         <div style={{
           width: '400px',
           height: '10px',
@@ -381,7 +337,6 @@ const LoadingScreen = ({ onComplete }) => {
           }} />
         </div>
         
-        {/* Progress Percentage */}
         <div style={{
           marginTop: '1.2rem',
           fontSize: '1.2rem',
@@ -392,7 +347,6 @@ const LoadingScreen = ({ onComplete }) => {
           {Math.floor(progress)}%
         </div>
         
-        {/* Loading Tips */}
         <div style={{
           marginTop: '2rem',
           fontSize: '0.9rem',
@@ -407,12 +361,8 @@ const LoadingScreen = ({ onComplete }) => {
       
       <style>{`
         @keyframes pulseGlow {
-          0% { 
-            box-shadow: 0 0 15px #00ff9d, 0 0 30px #00fff7; 
-          }
-          100% { 
-            box-shadow: 0 0 25px #00ff9d, 0 0 50px #00fff7; 
-          }
+          0% { box-shadow: 0 0 15px #00ff9d, 0 0 30px #00fff7; }
+          100% { box-shadow: 0 0 25px #00ff9d, 0 0 50px #00fff7; }
         }
         @keyframes blink {
           0%, 50% { opacity: 1; }

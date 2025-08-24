@@ -1,9 +1,44 @@
 import React, { useRef, Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import SkyboxFBX from './SkyboxModel';
-import '../index.css';
 import '../App.css';
 import { OrbitControls } from '@react-three/drei';
+
+function InteractiveParticles() {
+  const particlesRef = useRef(null);
+  
+  useEffect(() => {
+    const particles = particlesRef.current;
+    if (!particles) return;
+    
+    let ticking = false;
+    const handleMouseMove = (e) => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const rect = particles.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          particles.style.setProperty('--mouse-x', `${x}px`);
+          particles.style.setProperty('--mouse-y', `${y}px`);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    particles.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => particles.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+  
+  return (
+    <div ref={particlesRef} className="interactive-particles">
+      {Array.from({ length: 50 }).map((_, i) => (
+        <div key={i} className="particle" style={{ '--delay': `${i * 0.1}s` }} />
+      ))}
+    </div>
+  );
+}
 
 function TopNav({ sectionRefs, activeSection }) {
   const links = ['About', 'Skills', 'Work', 'Projects', 'Contact', 'Resume'];
@@ -40,6 +75,7 @@ export default function HomeScreen() {
   const resumeRef = useRef(null);
   const [activeSection, setActiveSection] = useState('about');
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   const sectionRefs = {
     about: aboutRef,
@@ -50,18 +86,15 @@ export default function HomeScreen() {
     resume: resumeRef,
   };
 
-  // Handle scroll spy for navigation highlighting and scroll progress
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
       
-      // Calculate scroll progress
       const progress = (scrollPosition / (documentHeight - windowHeight)) * 100;
       setScrollProgress(Math.min(progress, 100));
       
-      // Handle section highlighting
       const scrollPositionWithOffset = scrollPosition + 100;
       
       Object.entries(sectionRefs).forEach(([sectionName, ref]) => {
@@ -74,28 +107,36 @@ export default function HomeScreen() {
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [sectionRefs]);
-
-  // Intersection Observer for scroll animations
-  useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+    let ticking = false;
+    const handleMouseMove = (e) => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setMousePosition({ x: e.clientX, y: e.clientY });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [sectionRefs]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && entry.target) {
           entry.target.classList.add('visible');
         }
       });
-    }, observerOptions);
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    // Observe all sections
     Object.values(sectionRefs).forEach((ref) => {
-      if (ref.current) {
+      if (ref && ref.current) {
         observer.observe(ref.current);
       }
     });
@@ -107,32 +148,24 @@ export default function HomeScreen() {
     <div style={{ fontFamily: "'Space Mono', monospace" }}>
       <TopNav sectionRefs={sectionRefs} activeSection={activeSection} />
       
-      {/* Scroll Progress Bar */}
       <div className="scroll-progress-bar">
-        <div 
-          className="scroll-progress-fill" 
-          style={{ width: `${scrollProgress}%` }}
-        />
+        <div className="scroll-progress-fill" style={{ width: `${scrollProgress}%` }} />
       </div>
+      
+      <InteractiveParticles />
+      
+      <div className="mouse-trail" style={{ left: mousePosition.x, top: mousePosition.y }} />
+      <div className="cursor-trail-1" style={{ left: mousePosition.x, top: mousePosition.y }} />
+      <div className="cursor-trail-2" style={{ left: mousePosition.x, top: mousePosition.y }} />
+      <div className="cursor-trail-3" style={{ left: mousePosition.x, top: mousePosition.y }} />
       
       <section className="home-screen">
         <div className="left-column">
-          {/* === HERO SECTION WITH SKYBOX === */}
-          <div
-            ref={aboutRef}
-            id="about"
-            className="hero-section"
-          >
-            {/* Skybox canvas - only for home section */}
+          <div ref={aboutRef} id="about" className="hero-section">
             <div className="skybox-container">
               <Canvas
                 camera={{ position: [0, 0, 2], fov: 70 }}
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  background: 'transparent', 
-                  display: 'block' 
-                }}
+                style={{ width: '100%', height: '100%', background: 'transparent', display: 'block' }}
                 gl={{ alpha: true }}
               >
                 <Suspense fallback={null}>
@@ -142,9 +175,13 @@ export default function HomeScreen() {
               </Canvas>
             </div>
             
-            {/* Centered hero content on top */}
             <div className="hero-content">
               <div className="hero-text-container">
+                <div className="floating-elements">
+                  <div className="floating-orb" style={{ '--delay': '0s' }} />
+                  <div className="floating-orb" style={{ '--delay': '1s' }} />
+                  <div className="floating-orb" style={{ '--delay': '2s' }} />
+                </div>
                 <p className="job-title">Full Stack Developer</p>
                 <div className="name-container">
                   <h1 className="hello-text">Hello I'm</h1>
@@ -154,202 +191,443 @@ export default function HomeScreen() {
                   Computer Science student at University of Windsor with a passion for full-stack development, AI, and problem-solving. Currently interning at Rocket Studio Innovation, building scalable applications with React, TypeScript, and modern web technologies.
                 </p>
                 <div className="buttons">
-                  <button className="contact-button" onClick={() => sectionRefs.contact.current.scrollIntoView({ behavior: 'smooth' })}>
+                  <button className="contact-button" onClick={() => {
+                    try {
+                      sectionRefs.contact.current?.scrollIntoView({ behavior: 'smooth' });
+                    } catch (error) {
+                      console.warn('Scroll failed:', error);
+                    }
+                  }}>
                     <span>Contact Me</span>
+                    <div className="button-glow" />
                   </button>
-                  <button className="learn-button" onClick={() => sectionRefs.skills.current.scrollIntoView({ behavior: 'smooth' })}>
+                  <button className="learn-button" onClick={() => {
+                    try {
+                      sectionRefs.skills.current?.scrollIntoView({ behavior: 'smooth' });
+                    } catch (error) {
+                      console.warn('Scroll failed:', error);
+                    }
+                  }}>
                     <span>View Skills →</span>
+                    <div className="button-glow" />
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* === Other Sections === */}
-          {/* Skills Section */}
           <div ref={skillsRef} id="skills" className="section skills-section">
             <div className="section-content">
-              <h2>Technical Skills</h2>
-              <p>Technologies and tools I work with:</p>
+              <div className="section-header">
+                <h2 className="section-title">Technical Skills</h2>
+                <p className="section-subtitle">Technologies and tools I work with</p>
+                <div className="section-decoration">
+                  <div className="decoration-line"></div>
+                  <div className="decoration-dot"></div>
+                  <div className="decoration-line"></div>
+                </div>
+              </div>
+              
               <div className="skills-grid">
                 <div className="skill-category">
+                  <div className="skill-icon">💻</div>
                   <h3>Programming Languages</h3>
-                  <ul>
-                    <li>TypeScript</li>
-                    <li>Python</li>
-                    <li>JavaScript</li>
-                    <li>Java</li>
-                    <li>C</li>
-                    <li>SQL</li>
-                  </ul>
+                  <div className="skill-items">
+                    <span className="skill-item">TypeScript</span>
+                    <span className="skill-item">Python</span>
+                    <span className="skill-item">JavaScript</span>
+                    <span className="skill-item">Java</span>
+                    <span className="skill-item">C</span>
+                    <span className="skill-item">SQL</span>
+                  </div>
                 </div>
+                
                 <div className="skill-category">
+                  <div className="skill-icon">🌐</div>
                   <h3>Frontend & Web</h3>
-                  <ul>
-                    <li>React</li>
-                    <li>Angular</li>
-                    <li>HTML/CSS</li>
-                    <li>Next.js</li>
-                    <li>Responsive Design</li>
-                  </ul>
+                  <div className="skill-items">
+                    <span className="skill-item">React</span>
+                    <span className="skill-item">Angular</span>
+                    <span className="skill-item">HTML/CSS</span>
+                    <span className="skill-item">Next.js</span>
+                    <span className="skill-item">Responsive Design</span>
+                  </div>
                 </div>
+                
                 <div className="skill-category">
+                  <div className="skill-icon">⚙️</div>
                   <h3>Backend & Tools</h3>
-                  <ul>
-                    <li>Node.js</li>
-                    <li>PostgreSQL</li>
-                    <li>Docker</li>
-                    <li>Git</li>
-                    <li>VS Code</li>
-                  </ul>
+                  <div className="skill-items">
+                    <span className="skill-item">Node.js</span>
+                    <span className="skill-item">PostgreSQL</span>
+                    <span className="skill-item">Docker</span>
+                    <span className="skill-item">Git</span>
+                    <span className="skill-item">VS Code</span>
+                  </div>
                 </div>
+                
                 <div className="skill-category">
+                  <div className="skill-icon">🤖</div>
                   <h3>AI & Methodologies</h3>
-                  <ul>
-                    <li>NEAT Algorithm</li>
-                    <li>Machine Learning</li>
-                    <li>Agile Development</li>
-                    <li>OOP & MVC</li>
-                    <li>Problem Solving</li>
-                  </ul>
+                  <div className="skill-items">
+                    <span className="skill-item">NEAT Algorithm</span>
+                    <span className="skill-item">Machine Learning</span>
+                    <span className="skill-item">Agile Development</span>
+                    <span className="skill-item">OOP & MVC</span>
+                    <span className="skill-item">Problem Solving</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Work Section */}
           <div ref={workRef} id="work" className="section work-section">
             <div className="section-content">
-              <h2>Work Experience</h2>
-              <p>My professional journey in software development:</p>
+              <div className="section-header">
+                <h2 className="section-title">Work Experience</h2>
+                <p className="section-subtitle">My professional journey in software development</p>
+                <div className="section-decoration">
+                  <div className="decoration-line"></div>
+                  <div className="decoration-dot"></div>
+                  <div className="decoration-line"></div>
+                </div>
+              </div>
+              
               <div className="timeline">
                 <div className="timeline-item">
-                  <div className="timeline-dot"></div>
+                  <div className="timeline-marker">
+                    <div className="timeline-dot"></div>
+                    <div className="timeline-line"></div>
+                  </div>
                   <div className="timeline-content">
-                    <h3>Full Stack Developer - Intern</h3>
-                    <p className="company">Rocket Studio Innovation</p>
-                    <p className="period">Summer 2024</p>
-                    <p>Spearheaded comprehensive code refactoring efforts, significantly reducing technical debt and optimizing performance. Discovered and resolved over 15 critical front-end and back-end bugs, boosting site responsiveness. Led development of a full-stack React system (Next.js + TypeScript) for company-wide interview scheduling.</p>
+                    <div className="timeline-header">
+                      <h3>Full Stack Developer - Intern</h3>
+                      <div className="timeline-badge completed">Completed</div>
+                    </div>
+                    <div className="timeline-company">
+                      <span className="company-emoji">🚀</span>
+                      <span className="company-name">Rocket Studio Innovation</span>
+                    </div>
+                    <div className="timeline-period">
+                      <span className="period-date">Summer 2024</span>
+                      <span className="period-duration">3 months</span>
+                    </div>
+                    
+                    <div className="timeline-description">
+                      <div className="role-overview">
+                        <p>Led full-stack development initiatives for a growing tech company, focusing on code quality, performance optimization, and user experience improvements.</p>
+                      </div>
+                      
+                      <div className="key-achievements">
+                        <h4>Key Achievements</h4>
+                        <div className="achievement-grid">
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🔧</span>
+                            <span className="achievement-text">Code Refactoring</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🐛</span>
+                            <span className="achievement-text">Bug Resolution</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">⚡</span>
+                            <span className="achievement-text">Performance Optimization</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🎯</span>
+                            <span className="achievement-text">Full-Stack Development</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="tech-used">
+                        <h4>Technologies Used</h4>
+                        <div className="tech-tags">
+                          <span className="tech-tag">React</span>
+                          <span className="tech-tag">TypeScript</span>
+                          <span className="tech-tag">Next.js</span>
+                          <span className="tech-tag">Python</span>
+                          <span className="tech-tag">PostgreSQL</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                
                 <div className="timeline-item">
-                  <div className="timeline-dot"></div>
+                  <div className="timeline-marker">
+                    <div className="timeline-dot"></div>
+                    <div className="timeline-line"></div>
+                  </div>
                   <div className="timeline-content">
-                    <h3>IT Technician</h3>
-                    <p className="company">Tech-Genie</p>
-                    <p className="period">September 2023 - January 2024</p>
-                    <p>Effectively diagnosed and resolved hardware problems for more than 10 clients, ensuring peak computer performance. Leveraged platforms like Facebook Marketplace and Kijiji to actively seek clients while offering incentives for referrals. Delivered prompt solutions through effective communication and provided impactful tips to prevent future issues.</p>
+                    <div className="timeline-header">
+                      <h3>IT Technician</h3>
+                      <div className="timeline-badge completed">Completed</div>
+                    </div>
+                    <div className="timeline-company">
+                      <span className="company-emoji">🔧</span>
+                      <span className="company-name">Tech-Genie</span>
+                    </div>
+                    <div className="timeline-period">
+                      <span className="period-date">September 2023 - January 2024</span>
+                      <span className="period-duration">5 months</span>
+                    </div>
+                    
+                    <div className="timeline-description">
+                      <div className="role-overview">
+                        <p>Provided technical support and hardware repair services to clients, demonstrating strong problem-solving skills and customer service abilities.</p>
+                      </div>
+                      
+                      <div className="key-achievements">
+                        <h4>Key Achievements</h4>
+                        <div className="achievement-grid">
+                          <div className="achievement-item">
+                            <span className="achievement-icon">💻</span>
+                            <span className="achievement-text">Hardware Repair</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">👥</span>
+                            <span className="achievement-text">Client Management</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🔍</span>
+                            <span className="achievement-text">Problem Solving</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">📱</span>
+                            <span className="achievement-text">Platform Marketing</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="tech-used">
+                        <h4>Skills Applied</h4>
+                        <div className="tech-tags">
+                          <span className="tech-tag">Hardware Diagnostics</span>
+                          <span className="tech-tag">Customer Service</span>
+                          <span className="tech-tag">Problem Solving</span>
+                          <span className="tech-tag">Marketing</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Projects Section */}
           <div ref={projectsRef} id="projects" className="section projects-section">
             <div className="section-content">
-              <h2>Featured Projects</h2>
-              <p>Some of the applications I've built:</p>
+              <div className="section-header">
+                <h2 className="section-title">Featured Projects</h2>
+                <p className="section-subtitle">Some of the applications I've built</p>
+                <div className="section-decoration">
+                  <div className="decoration-line"></div>
+                  <div className="decoration-dot"></div>
+                  <div className="decoration-line"></div>
+                </div>
+              </div>
+              
               <div className="projects-grid">
+                <div className="project-card featured">
+                  <div className="project-header">
+                    <div className="project-icon">📈</div>
+                    <div className="project-badge">Featured</div>
+                  </div>
+                  <h3>Stock Price Predictor</h3>
+                  <p>Advanced stock analysis tool that uses mathematical algorithms to predict stock prices and provide buy/sell recommendations. Currently implementing AI/ML capabilities for enhanced prediction accuracy.</p>
+                  <div className="project-tech">
+                    <span className="tech-tag">Python</span>
+                    <span className="tech-tag">Machine Learning</span>
+                    <span className="tech-tag">Data Analysis</span>
+                    <span className="tech-tag">Financial APIs</span>
+                    <span className="tech-tag">AI/ML</span>
+                  </div>
+                  <div className="project-links">
+                    <a href="https://github.com/David-Fr-afk/Stock-Price-Predictor" target="_blank" rel="noopener noreferrer" className="project-link">
+                      <span>🐙 View on GitHub</span>
+                      <div className="link-arrow">→</div>
+                    </a>
+                  </div>
+                </div>
+                
                 <div className="project-card">
+                  <div className="project-header">
+                    <div className="project-icon">🔐</div>
+                  </div>
                   <h3>Full Stack Password Manager</h3>
                   <p>Secure password management application with encrypted user credentials and hashed authentication. Features a React frontend and Python backend with PostgreSQL database integration.</p>
                   <div className="project-tech">
-                    <span>React</span>
-                    <span>Python</span>
-                    <span>PostgreSQL</span>
-                    <span>JavaScript</span>
-                    <span>HTML/CSS</span>
+                    <span className="tech-tag">React</span>
+                    <span className="tech-tag">Python</span>
+                    <span className="tech-tag">PostgreSQL</span>
+                    <span className="tech-tag">JavaScript</span>
+                    <span className="tech-tag">HTML/CSS</span>
+                  </div>
+                  <div className="project-links">
+                    <a href="https://github.com/David-Fr-afk/Password-Manager" target="_blank" rel="noopener noreferrer" className="project-link">
+                      <span>🐙 View on GitHub</span>
+                      <div className="link-arrow">→</div>
+                    </a>
                   </div>
                 </div>
+                
                 <div className="project-card">
+                  <div className="project-header">
+                    <div className="project-icon">🦖</div>
+                  </div>
                   <h3>AI-Powered Dino Runner</h3>
                   <p>Implemented an AI using NEAT algorithms to autonomously play the Chrome Dino game. Applied neural networks and genetic algorithms to demonstrate AI-driven gameplay and strategy evolution.</p>
                   <div className="project-tech">
-                    <span>Python</span>
-                    <span>NEAT</span>
-                    <span>Machine Learning</span>
-                    <span>Neural Networks</span>
+                    <span className="tech-tag">Python</span>
+                    <span className="tech-tag">NEAT</span>
+                    <span className="tech-tag">Machine Learning</span>
+                    <span className="tech-tag">Neural Networks</span>
+                  </div>
+                  <div className="project-links">
+                    <a href="https://github.com/David-Fr-afk/Ai-plays-DINO" target="_blank" rel="noopener noreferrer" className="project-link">
+                      <span>🐙 View on GitHub</span>
+                      <div className="link-arrow">→</div>
+                    </a>
                   </div>
                 </div>
+                
                 <div className="project-card">
-                  <h3>Portfolio Website</h3>
+                  <div className="project-header">
+                    <div className="project-icon">🌌</div>
+                  </div>
+                  <h3>Personal Portfolio Website</h3>
                   <p>Personal portfolio built with React and Three.js featuring 3D space theme, smooth scrolling, and responsive design. Demonstrates modern web development skills and creativity.</p>
                   <div className="project-tech">
-                    <span>React</span>
-                    <span>Three.js</span>
-                    <span>CSS3</span>
-                    <span>JavaScript</span>
+                    <span className="tech-tag">React</span>
+                    <span className="tech-tag">Three.js</span>
+                    <span className="tech-tag">CSS3</span>
+                    <span className="tech-tag">JavaScript</span>
+                  </div>
+                  <div className="project-links">
+                    <a href="https://github.com/David-Fr-afk/personal-portfolio" target="_blank" rel="noopener noreferrer" className="project-link">
+                      <span>🐙 View on GitHub</span>
+                      <div className="link-arrow">→</div>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Contact Section */}
           <div ref={contactRef} id="contact" className="section contact-section">
             <div className="section-content">
-              <h2>Get In Touch</h2>
-              <p>Let's connect and discuss opportunities:</p>
+              <div className="section-header">
+                <h2 className="section-title">Get In Touch</h2>
+                <p className="section-subtitle">Let's connect and discuss opportunities</p>
+                <div className="section-decoration">
+                  <div className="decoration-line"></div>
+                  <div className="decoration-dot"></div>
+                  <div className="decoration-line"></div>
+                </div>
+              </div>
+              
               <div className="contact-grid">
                 <div className="contact-item">
                   <div className="contact-icon">📧</div>
-                  <div>
+                  <div className="contact-details">
                     <h3>Email</h3>
-                    <a href="mailto:dvdshabo@gmail.com">dvdshabo@gmail.com</a>
+                    <a href="mailto:dvdshabo@gmail.com" className="contact-link">dvdshabo@gmail.com</a>
+                    <p className="contact-note">Available for freelance and full-time opportunities</p>
                   </div>
                 </div>
+                
                 <div className="contact-item">
                   <div className="contact-icon">🐙</div>
-                  <div>
+                  <div className="contact-details">
                     <h3>GitHub</h3>
-                    <a href="https://github.com/DavidShaboGitHub" target="_blank" rel="noopener noreferrer">DavidShaboGitHub</a>
+                    <a href="https://github.com/DavidShaboGitHub" target="_blank" rel="noopener noreferrer" className="contact-link">DavidShaboGitHub</a>
+                    <p className="contact-note">Check out my latest projects and contributions</p>
                   </div>
                 </div>
-                <div className="contact-item">
-                  <div className="contact-icon">📱</div>
-                  <div>
-                    <h3>Phone</h3>
-                    <a href="tel:+12265066973">(226) 506-6973</a>
-                  </div>
-                </div>
+                
                 <div className="contact-item">
                   <div className="contact-icon">📍</div>
-                  <div>
+                  <div className="contact-details">
                     <h3>Location</h3>
-                    <span>Windsor, ON, Canada</span>
+                    <span className="contact-text">Windsor, ON, Canada</span>
+                    <p className="contact-note">Open to remote and local opportunities</p>
                   </div>
                 </div>
+              </div>
+              
+              <div className="contact-cta">
+                <p>Ready to collaborate on something amazing?</p>
+                <button className="cta-button" onClick={() => {
+                  try {
+                    window.open('mailto:dvdshabo@gmail.com');
+                  } catch (error) {
+                    console.warn('Failed to open email client:', error);
+                    // Fallback: copy email to clipboard
+                    navigator.clipboard.writeText('dvdshabo@gmail.com').then(() => {
+                      alert('Email copied to clipboard: dvdshabo@gmail.com');
+                    }).catch(() => {
+                      alert('Email: dvdshabo@gmail.com');
+                    });
+                  }
+                }}>
+                  <span>Start a Conversation</span>
+                  <div className="cta-glow"></div>
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Resume Section */}
           <div ref={resumeRef} id="resume" className="section resume-section">
             <div className="section-content">
-              <h2>Resume & Education</h2>
-              <p>Download my resume or learn more about my background:</p>
-              <div className="resume-info">
+              <div className="section-header">
+                <h2 className="section-title">Resume & Education</h2>
+                <p className="section-subtitle">Download my resume or learn more about my background</p>
+                <div className="section-decoration">
+                  <div className="decoration-line"></div>
+                  <div className="decoration-dot"></div>
+                  <div className="decoration-line"></div>
+                </div>
+              </div>
+              
+              <div className="resume-content">
                 <div className="education-card">
-                  <h3>Education</h3>
+                  <div className="education-header">
+                    <div className="education-icon">🎓</div>
+                    <h3>Education</h3>
+                  </div>
                   <div className="education-details">
                     <h4>University of Windsor</h4>
-                    <p>Bachelor of Computer Science (Honors)</p>
-                    <p>3rd Year • Windsor, ON</p>
+                    <p className="degree">Bachelor of Computer Science (Honors)</p>
+                    <p className="specialization">Specialization in Machine Learning</p>
+                    <div className="education-info">
+                      <span className="year">4th Year</span>
+                      <span className="location">📍 Windsor, ON</span>
+                    </div>
+                    <div className="education-highlights">
+                      <span className="highlight">AI/ML Focus</span>
+                      <span className="highlight">Research Projects</span>
+                      <span className="highlight">Academic Excellence</span>
+                    </div>
                   </div>
                 </div>
+                
                 <div className="resume-actions">
-                  <a href="/resume.pdf" download className="resume-download-btn">
-                    📄 Download Resume
-                  </a>
-                  <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
-                    👁️ View Online
-                  </a>
+                  <div className="action-group">
+                    <a href="/resume.pdf" download className="resume-download-btn">
+                      <span>📄 Download Resume</span>
+                      <div className="btn-glow"></div>
+                    </a>
+                    <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
+                      <span>👁️ View Online</span>
+                      <div className="btn-glow"></div>
+                    </a>
+                  </div>
+                  <p className="resume-note">PDF format • Updated regularly</p>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </section>
     </div>
