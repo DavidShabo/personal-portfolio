@@ -115,7 +115,7 @@ function EnergyField() {
   );
 }
 
-const BlackHoleModel = () => {
+const BlackHoleModel = ({ onModelLoad }) => {
   const modelRef = useRef();
   const fbx = useFBX('/models/blackhole/blackhole.fbx');
   const blackhole = fbx.clone();
@@ -131,7 +131,10 @@ const BlackHoleModel = () => {
         }
       }
     });
-  }, [blackhole]);
+    
+    // Signal that the blackhole model is loaded
+    onModelLoad && onModelLoad();
+  }, [blackhole, onModelLoad]);
   
   useFrame(({ clock }) => {
     if (modelRef.current) {
@@ -192,6 +195,8 @@ const LoadingScreen = ({ onComplete }) => {
   const [show, setShow] = useState(false);
   const [showText, setShowText] = useState(false);
   const [loadingPhase, setLoadingPhase] = useState(0);
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
   
   const loadingPhases = [
     "INITIALIZING QUANTUM CORE",
@@ -208,10 +213,18 @@ const LoadingScreen = ({ onComplete }) => {
     
     const interval = setInterval(() => {
       setProgress(prev => {
-        const newProgress = prev + 2;
+        const newProgress = prev + 0.8; 
+        
+        if (newProgress >= 80 && !modelsLoaded) {
+          return 80;
+        }
+        
         if (newProgress >= 100) {
           clearInterval(interval);
-          setTimeout(() => onComplete && onComplete(), 1200);
+          setLoadingComplete(true);
+          if (modelsLoaded) {
+            setTimeout(() => onComplete && onComplete(), 2000);
+          }
           return 100;
         }
         
@@ -222,13 +235,13 @@ const LoadingScreen = ({ onComplete }) => {
         
         return newProgress;
       });
-    }, 40);
+    }, 120); 
     
     return () => {
       clearInterval(interval);
       clearTimeout(textTimer);
     };
-  }, [onComplete, loadingPhase]);
+  }, [onComplete, loadingPhase, modelsLoaded]);
   
   return (
     <div style={{
@@ -258,19 +271,23 @@ const LoadingScreen = ({ onComplete }) => {
         <Stars radius={100} depth={50} count={5000} factor={4} saturation={0.1} fade={true} />
         <fog attach="fog" args={["#0a0a1a", 8, 18]} />
         <React.Suspense fallback={null}>
-          <BlackHoleModel />
+          <BlackHoleModel onModelLoad={() => {
+            setModelsLoaded(true);
+          }} />
           <AccretionDisk />
           <ParticleRing />
           <FloatingDebris />
           <EnergyField />
         </React.Suspense>
         <OrbitControls 
-          enableZoom={false} 
-          enablePan={false} 
+          enableZoom={true} 
+          enablePan={true} 
           autoRotate={true} 
-          autoRotateSpeed={0.7}
+          autoRotateSpeed={0.5}
           enableDamping={true}
           dampingFactor={0.05}
+          minDistance={2}
+          maxDistance={15}
         />
       </Canvas>
       <VignetteOverlay />
@@ -303,16 +320,38 @@ const LoadingScreen = ({ onComplete }) => {
           <LoadingText text="INITIALIZING PORTFOLIO" show={showText} />
         </h2>
         
-        <div style={{
-          marginBottom: '2rem',
-          fontSize: '1rem',
-          opacity: 0.8,
-          textShadow: '0 0 8px #00ff9d',
-          minHeight: '1.2em',
-          transition: 'all 0.5s ease',
-        }}>
-          <LoadingText text={loadingPhases[loadingPhase]} show={showText} delay={200} />
-        </div>
+                 <div style={{
+           marginBottom: '2rem',
+           fontSize: '1rem',
+           opacity: 0.8,
+           textShadow: '0 0 8px #00ff9d',
+           minHeight: '1.2em',
+           transition: 'all 0.5s ease',
+         }}>
+           <LoadingText text={loadingPhases[loadingPhase]} show={showText} delay={200} />
+           {progress >= 80 && !modelsLoaded && (
+             <div style={{
+               marginTop: '1rem',
+               fontSize: '0.9rem',
+               opacity: 0.7,
+               color: '#00fff7',
+               animation: 'pulse 1.5s infinite'
+             }}>
+               Loading 3D Models...
+             </div>
+           )}
+           {modelsLoaded && progress >= 80 && (
+             <div style={{
+               marginTop: '1rem',
+               fontSize: '0.9rem',
+               opacity: 1,
+               color: '#00ff9d',
+               animation: 'fadeIn 0.5s ease-out'
+             }}>
+               ✓ 3D Models Loaded
+             </div>
+           )}
+         </div>
         
         <div style={{
           width: '400px',
@@ -357,18 +396,37 @@ const LoadingScreen = ({ onComplete }) => {
         }}>
           <LoadingText text="Preparing to explore the digital cosmos..." show={showText} delay={1000} />
         </div>
+        
+        <div style={{
+          marginTop: '1.5rem',
+          fontSize: '0.8rem',
+          opacity: 0.5,
+          color: '#00fff7',
+          textShadow: '0 0 4px #00fff7',
+          animation: 'fadeInOut 3s infinite',
+        }}>
+          💡 Try zooming and rotating the blackhole while you wait!
+        </div>
       </div>
       
-      <style>{`
-        @keyframes pulseGlow {
-          0% { box-shadow: 0 0 15px #00ff9d, 0 0 30px #00fff7; }
-          100% { box-shadow: 0 0 25px #00ff9d, 0 0 50px #00fff7; }
-        }
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-      `}</style>
+             <style>{`
+         @keyframes pulseGlow {
+           0% { box-shadow: 0 0 15px #00ff9d, 0 0 30px #00fff7; }
+           100% { box-shadow: 0 0 25px #00ff9d, 0 0 50px #00fff7; }
+         }
+         @keyframes blink {
+           0%, 50% { opacity: 1; }
+           51%, 100% { opacity: 0; }
+         }
+         @keyframes pulse {
+           0%, 100% { opacity: 0.7; }
+           50% { opacity: 1; }
+         }
+         @keyframes fadeInOut {
+           0%, 100% { opacity: 0.3; }
+           50% { opacity: 0.7; }
+         }
+       `}</style>
     </div>
   );
 };

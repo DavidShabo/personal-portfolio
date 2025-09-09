@@ -76,6 +76,7 @@ export default function HomeScreen() {
   const [activeSection, setActiveSection] = useState('about');
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [modelOpacity, setModelOpacity] = useState(1);
   
   const sectionRefs = {
     about: aboutRef,
@@ -94,6 +95,15 @@ export default function HomeScreen() {
       
       const progress = (scrollPosition / (documentHeight - windowHeight)) * 100;
       setScrollProgress(Math.min(progress, 100));
+      
+      // Fade out model as user scrolls
+      const heroHeight = window.innerHeight;
+      if (scrollPosition < heroHeight) {
+        const opacity = 1 - (scrollPosition / heroHeight) * 0.5;
+        setModelOpacity(Math.max(opacity, 0.5));
+      } else {
+        setModelOpacity(0.5);
+      }
       
       const scrollPositionWithOffset = scrollPosition + 100;
       
@@ -162,7 +172,7 @@ export default function HomeScreen() {
       <section className="home-screen">
         <div className="left-column">
           <div ref={aboutRef} id="about" className="hero-section">
-            <div className="skybox-container">
+            <div className="skybox-container" style={{ opacity: modelOpacity }}>
               <Canvas
                 camera={{ position: [0, 0, 2], fov: 70 }}
                 style={{ width: '100%', height: '100%', background: 'transparent', display: 'block' }}
@@ -173,9 +183,10 @@ export default function HomeScreen() {
                 </Suspense>
                 <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} />
               </Canvas>
+              <div className="model-fade-overlay"></div>
             </div>
             
-            <div className="hero-content">
+            <div className="hero-content">  
               <div className="hero-text-container">
                 <div className="floating-elements">
                   <div className="floating-orb" style={{ '--delay': '0s' }} />
@@ -282,6 +293,20 @@ export default function HomeScreen() {
           </div>
 
           <div ref={workRef} id="work" className="section work-section">
+            <div className="floating-particles">
+              {Array.from({ length: 15 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className="floating-particle"
+                  style={{ 
+                    '--delay': `${i * 0.2}s`,
+                    '--size': `${Math.random() * 3 + 1}px`,
+                    '--x': `${Math.random() * 100}%`,
+                    '--y': `${Math.random() * 100}%`
+                  }}
+                />
+              ))}
+            </div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Work Experience</h2>
@@ -293,13 +318,9 @@ export default function HomeScreen() {
                 </div>
               </div>
               
-              <div className="timeline">
-                <div className="timeline-item">
-                  <div className="timeline-marker">
-                    <div className="timeline-dot"></div>
-                    <div className="timeline-line"></div>
-                  </div>
-                  <div className="timeline-content">
+                              <div className="timeline">
+                  <div className="timeline-item">
+                    <div className="timeline-content">
                     <div className="timeline-header">
                       <h3>Full Stack Developer - Intern</h3>
                       <div className="timeline-badge completed">Completed</div>
@@ -354,12 +375,8 @@ export default function HomeScreen() {
                   </div>
                 </div>
                 
-                <div className="timeline-item">
-                  <div className="timeline-marker">
-                    <div className="timeline-dot"></div>
-                    <div className="timeline-line"></div>
-                  </div>
-                  <div className="timeline-content">
+                                  <div className="timeline-item">
+                    <div className="timeline-content">
                     <div className="timeline-header">
                       <h3>IT Technician</h3>
                       <div className="timeline-badge completed">Completed</div>
@@ -417,6 +434,20 @@ export default function HomeScreen() {
           </div>
 
           <div ref={projectsRef} id="projects" className="section projects-section">
+            <div className="floating-particles">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className="floating-particle"
+                  style={{ 
+                    '--delay': `${i * 0.3}s`,
+                    '--size': `${Math.random() * 2 + 1}px`,
+                    '--x': `${Math.random() * 100}%`,
+                    '--y': `${Math.random() * 100}%`
+                  }}
+                />
+              ))}
+            </div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Featured Projects</h2>
@@ -516,6 +547,20 @@ export default function HomeScreen() {
           </div>
 
           <div ref={contactRef} id="contact" className="section contact-section">
+            <div className="floating-particles">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className="floating-particle"
+                  style={{ 
+                    '--delay': `${i * 0.4}s`,
+                    '--size': `${Math.random() * 2.5 + 1.5}px`,
+                    '--x': `${Math.random() * 100}%`,
+                    '--y': `${Math.random() * 100}%`
+                  }}
+                />
+              ))}
+            </div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Get In Touch</h2>
@@ -556,29 +601,51 @@ export default function HomeScreen() {
                 </div>
               </div>
               
-              <div className="contact-cta">
-                <p>Ready to collaborate on something amazing?</p>
-                <button className="cta-button" onClick={() => {
-                  try {
-                    window.open('mailto:dvdshabo@gmail.com');
-                  } catch (error) {
-                    console.warn('Failed to open email client:', error);
-                    // Fallback: copy email to clipboard
-                    navigator.clipboard.writeText('dvdshabo@gmail.com').then(() => {
-                      alert('Email copied to clipboard: dvdshabo@gmail.com');
-                    }).catch(() => {
-                      alert('Email: dvdshabo@gmail.com');
-                    });
-                  }
-                }}>
-                  <span>Start a Conversation</span>
-                  <div className="cta-glow"></div>
-                </button>
+              <div className="contact-form-section">
+                <h3>Send me a message</h3>
+                <form className="contact-form">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="name">Name</label>
+                      <input type="text" id="name" name="name" placeholder="Your name" required />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="email">Email</label>
+                      <input type="email" id="email" name="email" placeholder="Your email" required />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="What's this about?" required />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="message">Message</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
+                  </div>
+                  <button type="submit" className="submit-button">
+                    <span>Send Message</span>
+                    <div className="button-glow"></div>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
 
           <div ref={resumeRef} id="resume" className="section resume-section">
+            <div className="floating-particles">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className="floating-particle"
+                  style={{ 
+                    '--delay': `${i * 0.25}s`,
+                    '--size': `${Math.random() * 2 + 1}px`,
+                    '--x': `${Math.random() * 100}%`,
+                    '--y': `${Math.random() * 100}%`
+                  }}
+                />
+              ))}
+            </div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Resume & Education</h2>
@@ -614,11 +681,11 @@ export default function HomeScreen() {
                 
                 <div className="resume-actions">
                   <div className="action-group">
-                    <a href="/resume.pdf" download className="resume-download-btn">
+                    <a href="/DavidS.Resume.pdf" download className="resume-download-btn">
                       <span>📄 Download Resume</span>
                       <div className="btn-glow"></div>
                     </a>
-                    <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
+                    <a href="/DavidS.Resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
                       <span>👁️ View Online</span>
                       <div className="btn-glow"></div>
                     </a>
