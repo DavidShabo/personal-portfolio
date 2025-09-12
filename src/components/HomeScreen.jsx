@@ -1,3 +1,4 @@
+'use client';
 import React, { useRef, Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import SkyboxModel from './SkyboxModel';
