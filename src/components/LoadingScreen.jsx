@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useFBX, OrbitControls, Stars } from '@react-three/drei';
-import * as THREE from 'three';
 
 function AccretionDisk() {
   const mesh = useRef();

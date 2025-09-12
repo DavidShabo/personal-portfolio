@@ -1,6 +1,6 @@
 import React, { useRef, Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import SkyboxFBX from './SkyboxModel';
+import SkyboxModel from './SkyboxModel';
 import '../App.css';
 import { OrbitControls } from '@react-three/drei';
 
@@ -179,7 +179,7 @@ export default function HomeScreen() {
                 gl={{ alpha: true }}
               >
                 <Suspense fallback={null}>
-                  <SkyboxFBX />
+                  <SkyboxModel />
                 </Suspense>
                 <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} />
               </Canvas>
@@ -258,6 +258,7 @@ export default function HomeScreen() {
                   <h3>Frontend & Web</h3>
                   <div className="skill-items">
                     <span className="skill-item">React</span>
+                    <span className="skill-item">ThreeJS</span>
                     <span className="skill-item">Angular</span>
                     <span className="skill-item">HTML/CSS</span>
                     <span className="skill-item">Next.js</span>
