@@ -5,8 +5,7 @@ import * as THREE from 'three';
 
 const SkyboxModel = () => {
   const modelRef = useRef();
-  const { scene } = useGLTF('/models/skybox/sky_box.glb');
-  useGLTF.preload('/models/skybox/sky_box.glb');
+  const { scene } = useGLTF('/models/skybox/skybox.glb');
 
   useEffect(() => {
     if (scene) {
