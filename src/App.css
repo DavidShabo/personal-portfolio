@@ -6,12 +6,10 @@ html, body, #root {
   box-sizing: border-box;
 }
 
-/* Smooth page transitions */
 * {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Enhanced scroll behavior */
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 100px;
