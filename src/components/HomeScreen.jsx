@@ -576,7 +576,7 @@ export default function HomeScreen() {
                   <div className="contact-details">
                     <h3>Location</h3>
                     <span className="contact-text">Windsor, ON, Canada</span>
-                    <p className="contact-note">Open to remote and local opportunities</p>
+                    <p className="contact-note">Open to all opportunities, please email using the form below.</p>
                   </div>
                 </div>
               </div>
@@ -654,20 +654,17 @@ export default function HomeScreen() {
                     <div className="education-highlights">
                       <span className="highlight">AI/ML Focus</span>
                       <span className="highlight">Research Projects</span>
-                      <span className="highlight">Academic Excellence</span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="resume-actions">
                   <div className="action-group">
-                    <a href="/DavidS.Resume.pdf" download className="resume-download-btn">
+                    <a href="/public/DavidS.Resume.pdf" download className="resume-download-btn">
                       <span>📄 Download Resume</span>
-                      <div className="btn-glow"></div>
                     </a>
-                    <a href="/DavidS.Resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
+                    <a href="/public/DavidS.Resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
                       <span>👁️ View Online</span>
-                      <div className="btn-glow"></div>
                     </a>
                   </div>
                   <p className="resume-note">PDF format • Updated regularly</p>

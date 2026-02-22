@@ -2311,15 +2311,7 @@ button:hover, a:hover, input:hover, textarea:hover, select:hover {
   text-align: center;
 }
 
-.btn-glow {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 157, 0.3), transparent);
-  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
+
 
 .resume-download-btn:hover .btn-glow, .resume-view-btn:hover .btn-glow {
   left: 100%;
