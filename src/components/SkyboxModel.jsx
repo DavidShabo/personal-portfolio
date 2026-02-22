@@ -4,7 +4,6 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 const SkyboxModel = () => {
-  /** @type {import("react").MutableRefObject<import("three").Object3D | null>} */
   const modelRef = useRef(null);
 
   const { scene } = useGLTF("/models/skybox/skybox.glb");

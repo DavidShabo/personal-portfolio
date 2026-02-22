@@ -3,6 +3,34 @@ import { Canvas } from '@react-three/fiber';
 import SkyboxModel from './SkyboxModel';
 import '../App.css';
 import { OrbitControls } from '@react-three/drei';
+import emailjs from "@emailjs/browser";
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const formData = {
+    name: e.target.name.value,
+    email: e.target.email.value,
+    subject: e.target.subject.value,
+    message: e.target.message.value,
+  };
+
+  try {
+    await emailjs.send(
+      "service_zf8esrp",
+      "template_hhvay3l",
+      formData,
+      "ChMcC-dG43TR9nL9S"
+    );
+
+    alert("Thank you for your email! I will respond as soon as possible.");
+    e.target.reset();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to send message. Please contact me through my linkedin!");
+  }
+};
 
 function InteractiveParticles() {
   const particlesRef = useRef(null);
@@ -199,7 +227,7 @@ export default function HomeScreen() {
                   <h1 className="name-text nebula-glow">David</h1>
                 </div>
                 <p className="description">
-                  Computer Science student at University of Windsor with a passion for full-stack development, AI, and problem-solving. Currently interning at Rocket Studio Innovation, building scalable applications with React, TypeScript, and modern web technologies.
+                  Computer Science student at University of Windsor with a passion for full-stack development, AI, and problem-solving. Currently looking for a new graduate position, and improving upon my current skillsets.
                 </p>
                 <div className="buttons">
                   <button className="contact-button" onClick={() => {
@@ -303,6 +331,10 @@ export default function HomeScreen() {
                 />
               ))}
             </div>
+                                          <div className="timeline">
+                  <div className="timeline-item">
+                    <div className="timeline-content">
+                    <div className="timeline-header"></div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Work Experience</h2>
@@ -313,56 +345,7 @@ export default function HomeScreen() {
                   <div className="decoration-line"></div>
                 </div>
               </div>
-               <div className="timeline-content">
-                    <div className="timeline-header">
-                      <h3>IT Technician</h3>
-                      <div className="timeline-badge completed">Completed</div>
-                    </div>
-                    <div className="timeline-company">
-                      <span className="company-emoji">🔧</span>
-                      <span className="company-name">Tech-Genie</span>
-                    </div>
-                    <div className="timeline-period">
-                      <span className="period-date">September 2023 - January 2024</span>
-                      <span className="period-duration">5 months</span>
-                    </div>
-                    
-                    <div className="timeline-description">
-                      <div className="role-overview">
-                        <p>Provided technical support and hardware repair services to clients, demonstrating strong problem-solving skills and customer service abilities.</p>
-                      </div>
-                      
-                      <div className="key-achievements">
-                        <h4>Key Achievements</h4>
-                        <div className="achievement-grid">
-                          <div className="achievement-item">
-                            <span className="achievement-icon">💻</span>
-                            <span className="achievement-text">Hardware Repair</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">👥</span>
-                            <span className="achievement-text">Client Management</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🔍</span>
-                            <span className="achievement-text">Problem Solving</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">📱</span>
-                            <span className="achievement-text">Platform Marketing</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="tech-used">
-                        <h4>Skills Applied</h4>
-                        <div className="tech-tags">
-                          <span className="tech-tag">Hardware Diagnostics</span>
-                          <span className="tech-tag">Customer Service</span>
-                          <span className="tech-tag">Problem Solving</span>
-                          <span className="tech-tag">Marketing</span>
-                        </div>
-                      </div>
+              </div>
                     </div>
                   </div>
 
@@ -379,7 +362,7 @@ export default function HomeScreen() {
                     </div>
                     <div className="timeline-period">
                       <span className="period-date">Summer 2024</span>
-                      <span className="period-duration">3 months</span>
+                      <span className="period-duration">2 months</span>
                     </div>
                     
                     <div className="timeline-description">
@@ -583,7 +566,7 @@ export default function HomeScreen() {
                   <div className="contact-icon">🐙</div>
                   <div className="contact-details">
                     <h3>GitHub</h3>
-                    <a href="https://github.com/DavidShaboGitHub" target="_blank" rel="noopener noreferrer" className="contact-link">DavidShaboGitHub</a>
+                    <a href="https://github.com/DavidShabo" target="_blank" rel="noopener noreferrer" className="contact-link"> (CLICK ME) DavidShaboGitHub</a>
                     <p className="contact-note">Check out my latest projects and contributions</p>
                   </div>
                 </div>
@@ -600,7 +583,7 @@ export default function HomeScreen() {
               
               <div className="contact-form-section">
                 <h3>Send me a message</h3>
-                <form className="contact-form">
+                <form className="contact-form" onSubmit={handleSubmit}>
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="name">Name</label>
