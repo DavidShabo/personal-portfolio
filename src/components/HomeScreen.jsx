@@ -331,10 +331,7 @@ export default function HomeScreen() {
                 />
               ))}
             </div>
-                                          <div className="timeline">
-                  <div className="timeline-item">
-                    <div className="timeline-content">
-                    <div className="timeline-header"></div>
+              
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Work Experience</h2>
@@ -343,17 +340,84 @@ export default function HomeScreen() {
                   <div className="decoration-line"></div>
                   <div className="decoration-dot"></div>
                   <div className="decoration-line"></div>
-                </div>
-              </div>
-              </div>
+              
                     </div>
                   </div>
-
-                              <div className="timeline">
+                                <div className="timeline">
                   <div className="timeline-item">
                     <div className="timeline-content">
                     <div className="timeline-header">
-                      <h3>Full Stack Developer - Intern</h3>
+                      <h3>Software Developer</h3>
+                      <div className="timeline-badge completed">Completed</div>
+                    </div>
+                    <div className="timeline-company">
+                      <span className="company-emoji">⚙️</span>
+                      <span className="company-name">Data Solutions Group</span>
+                    </div>
+                    <div className="timeline-period">
+                      <span className="period-date">Fall 2025</span>
+                      <span className="period-duration">4 months</span>
+                      <span className="period-duration">Intern</span>
+
+                    </div>
+                    
+                    <div className="timeline-description">
+                      <div className="role-overview">
+                        <p>Developed an internal CRM feature to track and display customer contract renewals while also providing IT support using Azure AD, ServiceNow, and general IT tasks.</p>
+                      </div>
+                      
+                      <div className="key-achievements">
+                        <h4>Key Achievements</h4>
+                        <div className="achievement-grid">
+                          <div className="achievement-item">
+                            <span className="achievement-icon">📊</span>
+                            <span className="achievement-text">CRM Contract Renewal Dashboard</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🗄️</span>
+                            <span className="achievement-text">Database Query Development</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🧹</span>
+                            <span className="achievement-text">Data Cleanup & Standardization</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🖥️</span>
+                            <span className="achievement-text">Azure AD & ServiceNow IT Support</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="tech-used">
+                        <h4>Technologies Used</h4>
+                        <div className="tech-tags">
+                          <span className="tech-tag">React</span>
+                          <span className="tech-tag">TypeScript</span>
+                          <span className="tech-tag">Next.js</span>
+                          <span className="tech-tag">PostgreSQL</span>
+                          <span className="tech-tag"> Docker </span>
+                          <span className="tech-tag"> Azure AD </span>
+                          <span className="tech-tag"> Servicenow </span>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+                
+                                  <div className="timeline-item">
+      
+                </div>
+              </div>
+
+
+
+
+
+
+
+                  <div className="timeline-item">
+                    <div className="timeline-content">
+                    <div className="timeline-header">
+                      <h3>Full Stack Developer </h3>
                       <div className="timeline-badge completed">Completed</div>
                     </div>
                     <div className="timeline-company">
@@ -363,6 +427,8 @@ export default function HomeScreen() {
                     <div className="timeline-period">
                       <span className="period-date">Summer 2024</span>
                       <span className="period-duration">2 months</span>
+                      <span className="period-duration">Intern</span>
+
                     </div>
                     
                     <div className="timeline-description">
@@ -398,8 +464,8 @@ export default function HomeScreen() {
                           <span className="tech-tag">React</span>
                           <span className="tech-tag">TypeScript</span>
                           <span className="tech-tag">Next.js</span>
-                          <span className="tech-tag">Python</span>
                           <span className="tech-tag">PostgreSQL</span>
+                          <span className="tech-tag"> Docker </span>
                         </div>
                       </div>
                     </div>
