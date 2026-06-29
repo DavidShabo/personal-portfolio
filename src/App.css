@@ -6,9 +6,6 @@ html, body, #root {
   box-sizing: border-box;
 }
 
-* {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
 
 html {
   scroll-behavior: smooth;
@@ -1807,6 +1804,17 @@ button:hover, a:hover, input:hover, textarea:hover, select:hover {
 .timeline-badge.completed {
   background: linear-gradient(135deg, #00fff7, #e0baff);
   color: #000;
+}
+
+.timeline-badge.current {
+  background: linear-gradient(135deg, #00ff9d, #00ff9d);
+  color: #000;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(0, 255, 157, 0.6); }
+  50% { box-shadow: 0 0 16px rgba(0, 255, 157, 1); }
 }
 
 .timeline-company {

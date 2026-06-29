@@ -103,17 +103,16 @@ export default function HomeScreen() {
   const resumeRef = useRef(null);
   const [activeSection, setActiveSection] = useState('about');
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [modelOpacity, setModelOpacity] = useState(1);
   
-  const sectionRefs = {
+  const sectionRefs = React.useMemo(() => ({
     about: aboutRef,
     skills: skillsRef,
     work: workRef,
     projects: projectsRef,
     contact: contactRef,
     resume: resumeRef,
-  };
+  }), []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -145,24 +144,35 @@ export default function HomeScreen() {
       });
     };
 
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [sectionRefs]);
+
+  useEffect(() => {
     let ticking = false;
+    const trail = document.querySelector('.mouse-trail');
+    const t1 = document.querySelector('.cursor-trail-1');
+    const t2 = document.querySelector('.cursor-trail-2');
+    const t3 = document.querySelector('.cursor-trail-3');
     const handleMouseMove = (e) => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          setMousePosition({ x: e.clientX, y: e.clientY });
+          const x = e.clientX;
+          const y = e.clientY;
+          if (trail) { trail.style.left = x + 'px'; trail.style.top = y + 'px'; }
+          if (t1) { t1.style.left = x + 'px'; t1.style.top = y + 'px'; }
+          if (t2) { t2.style.left = x + 'px'; t2.style.top = y + 'px'; }
+          if (t3) { t3.style.left = x + 'px'; t3.style.top = y + 'px'; }
           ticking = false;
         });
         ticking = true;
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [sectionRefs]);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -192,10 +202,10 @@ export default function HomeScreen() {
       
       <InteractiveParticles />
       
-      <div className="mouse-trail" style={{ left: mousePosition.x, top: mousePosition.y }} />
-      <div className="cursor-trail-1" style={{ left: mousePosition.x, top: mousePosition.y }} />
-      <div className="cursor-trail-2" style={{ left: mousePosition.x, top: mousePosition.y }} />
-      <div className="cursor-trail-3" style={{ left: mousePosition.x, top: mousePosition.y }} />
+      <div className="mouse-trail" />
+      <div className="cursor-trail-1" />
+      <div className="cursor-trail-2" />
+      <div className="cursor-trail-3" />
       
       <section className="home-screen">
         <div className="left-column">
@@ -347,6 +357,60 @@ export default function HomeScreen() {
                   <div className="timeline-item">
                     <div className="timeline-content">
                     <div className="timeline-header">
+                      <h3>Systems Analyst</h3>
+                      <div className="timeline-badge current">Current</div>
+                    </div>
+                    <div className="timeline-company">
+                      <span className="company-emoji">🏭</span>
+                      <span className="company-name">Magna International</span>
+                    </div>
+                    <div className="timeline-period">
+                      <span className="period-date">March 2026 – Present</span>
+                      <span className="period-duration">Full-time</span>
+                    </div>
+                    <div className="timeline-description">
+                      <div className="role-overview">
+                        <p>Work on the company's MES (Manufacturing Execution System) and develop internal full-stack applications to support manufacturing operations.</p>
+                      </div>
+                      <div className="key-achievements">
+                        <h4>Key Achievements</h4>
+                        <div className="achievement-grid">
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🏗️</span>
+                            <span className="achievement-text">MES System Development</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🔗</span>
+                            <span className="achievement-text">OPC Router Integration</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">🖥️</span>
+                            <span className="achievement-text">Internal Full-Stack Apps</span>
+                          </div>
+                          <div className="achievement-item">
+                            <span className="achievement-icon">📊</span>
+                            <span className="achievement-text">Ignition SCADA</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="tech-used">
+                        <h4>Technologies Used</h4>
+                        <div className="tech-tags">
+                          <span className="tech-tag">Next.js</span>
+                          <span className="tech-tag">SQL Server</span>
+                          <span className="tech-tag">C#</span>
+                          <span className="tech-tag">.NET</span>
+                          <span className="tech-tag">OPC Router</span>
+                          <span className="tech-tag">Ignition</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                  <div className="timeline-item">
+                    <div className="timeline-content">
+                    <div className="timeline-header">
                       <h3>Software Developer</h3>
                       <div className="timeline-badge completed">Completed</div>
                     </div>
@@ -403,12 +467,7 @@ export default function HomeScreen() {
                   </div>
                 </div>
                 
-                                  <div className="timeline-item">
-      
-                </div>
               </div>
-
-
 
 
 
@@ -472,9 +531,6 @@ export default function HomeScreen() {
                   </div>
                 </div>
                 
-                                  <div className="timeline-item">
-      
-                </div>
               </div>
             </div>
           </div>
@@ -632,7 +688,7 @@ export default function HomeScreen() {
                   <div className="contact-icon">🐙</div>
                   <div className="contact-details">
                     <h3>GitHub</h3>
-                    <a href="https://github.com/DavidShabo" target="_blank" rel="noopener noreferrer" className="contact-link"> (CLICK ME) DavidShaboGitHub</a>
+                    <a href="https://github.com/DavidShabo" target="_blank" rel="noopener noreferrer" className="contact-link">github.com/DavidShabo</a>
                     <p className="contact-note">Check out my latest projects and contributions</p>
                   </div>
                 </div>
@@ -726,10 +782,10 @@ export default function HomeScreen() {
                 
                 <div className="resume-actions">
                   <div className="action-group">
-                    <a href="/public/DavidS.Resume.pdf" download className="resume-download-btn">
+                    <a href="/DavidS.Resume.pdf" download className="resume-download-btn">
                       <span>📄 Download Resume</span>
                     </a>
-                    <a href="/public/DavidS.Resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
+                    <a href="/DavidS.Resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
                       <span>👁️ View Online</span>
                     </a>
                   </div>
