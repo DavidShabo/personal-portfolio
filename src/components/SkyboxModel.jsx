@@ -21,7 +21,7 @@ const SkyboxModel = () => {
           m.depthWrite = false;
           m.fog = false;
           m.transparent = true;
-          m.opacity = 1;
+          m.opacity = 0.7;
           m.needsUpdate = true;
         });
       }

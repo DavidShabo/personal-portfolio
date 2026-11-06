@@ -1,72 +1,34 @@
 import React, { useRef, Suspense, useEffect, useState } from 'react';
-import { Canvas } from '@react-three/fiber';  
+import { Canvas } from '@react-three/fiber';
 import SkyboxModel from './SkyboxModel';
 import '../App.css';
 import { OrbitControls } from '@react-three/drei';
-import emailjs from "@emailjs/browser";
+import emailjs from '@emailjs/browser';
+import {
+  CodeIcon,
+  GlobeIcon,
+  GearIcon,
+  CpuIcon,
+  CarIcon,
+  LockIcon,
+  DinosaurIcon,
+  PaletteIcon,
+  TerminalIcon,
+  MailIcon,
+  GithubIcon,
+  MapPinIcon,
+  GradCapIcon,
+  EyeIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  AlertIcon,
+  ExternalLinkIcon,
+} from './icons';
 
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const formData = {
-    name: e.target.name.value,
-    email: e.target.email.value,
-    subject: e.target.subject.value,
-    message: e.target.message.value,
-  };
-
-  try {
-    await emailjs.send(
-      "service_zf8esrp",
-      "template_hhvay3l",
-      formData,
-      "ChMcC-dG43TR9nL9S"
-    );
-
-    alert("Thank you for your email! I will respond as soon as possible.");
-    e.target.reset();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to send message. Please contact me through my linkedin!");
-  }
-};
-
-function InteractiveParticles() {
-  const particlesRef = useRef(null);
-  
-  useEffect(() => {
-    const particles = particlesRef.current;
-    if (!particles) return;
-    
-    let ticking = false;
-    const handleMouseMove = (e) => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const rect = particles.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          
-          particles.style.setProperty('--mouse-x', `${x}px`);
-          particles.style.setProperty('--mouse-y', `${y}px`);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    
-    particles.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => particles.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-  
-  return (
-    <div ref={particlesRef} className="interactive-particles">
-      {Array.from({ length: 50 }).map((_, i) => (
-        <div key={i} className="particle" style={{ '--delay': `${i * 0.1}s` }} />
-      ))}
-    </div>
-  );
-}
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+const CONTACT_EMAIL = 'dvdshabo@gmail.com';
 
 function TopNav({ sectionRefs, activeSection }) {
   const links = ['About', 'Skills', 'Work', 'Projects', 'Contact', 'Resume'];
@@ -74,7 +36,7 @@ function TopNav({ sectionRefs, activeSection }) {
     e.preventDefault();
     sectionRefs[section]?.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   return (
     <nav className="top-nav">
       <ul>
@@ -94,6 +56,136 @@ function TopNav({ sectionRefs, activeSection }) {
   );
 }
 
+const skills = [
+  {
+    icon: CodeIcon,
+    title: 'Programming Languages',
+    items: ['TypeScript', 'Python', 'JavaScript', 'SQL'],
+  },
+  {
+    icon: GlobeIcon,
+    title: 'Frontend & Web',
+    items: ['React', 'ThreeJS', 'Angular', 'HTML/CSS', 'Next.js', 'Responsive Design'],
+  },
+  {
+    icon: GearIcon,
+    title: 'Backend & Tools',
+    items: ['Node.js', 'PostgreSQL', 'Docker', 'Git'],
+  },
+  {
+    icon: CpuIcon,
+    title: 'AI & Methodologies',
+    items: ['Machine Learning', 'Agile Development', 'Problem Solving'],
+  },
+];
+
+const experience = [
+  {
+    role: 'Systems Analyst',
+    badge: 'Current',
+    badgeType: 'current',
+    company: 'Magna International',
+    period: 'March 2026 – Present',
+    duration: 'Full-time',
+    overview:
+      "Work on the company's MES (Manufacturing Execution System) and develop internal full-stack applications to support manufacturing operations.",
+    achievements: [
+      'MES System Development',
+      'OPC Router Integration',
+      'Internal Full-Stack Apps',
+      'Ignition SCADA',
+    ],
+    tech: ['Next.js', 'SQL Server', 'C#', '.NET', 'OPC Router', 'Ignition'],
+  },
+  {
+    role: 'Software Developer',
+    badge: 'Completed',
+    badgeType: 'completed',
+    company: 'Data Solutions Group',
+    period: 'Fall 2025',
+    duration: '4 months · Intern',
+    overview:
+      'Developed an internal CRM feature to track and display customer contract renewals while also providing IT support using Azure AD, ServiceNow, and general IT tasks.',
+    achievements: [
+      'CRM Contract Renewal Dashboard',
+      'Database Query Development',
+      'Data Cleanup & Standardization',
+      'Azure AD & ServiceNow IT Support',
+    ],
+    tech: ['React', 'TypeScript', 'Next.js', 'PostgreSQL', 'Docker', 'Azure AD', 'ServiceNow'],
+  },
+  {
+    role: 'Full Stack Developer',
+    badge: 'Completed',
+    badgeType: 'completed',
+    company: 'Rocket Studio Innovation',
+    period: 'Summer 2024',
+    duration: '2 months · Intern',
+    overview:
+      'Led full-stack development initiatives for a growing tech company, focusing on code quality, performance optimization, and user experience improvements.',
+    achievements: [
+      'Code Refactoring',
+      'Bug Resolution',
+      'Performance Optimization',
+      'Full-Stack Development',
+    ],
+    tech: ['React', 'TypeScript', 'Next.js', 'PostgreSQL', 'Docker'],
+  },
+];
+
+const projects = [
+  {
+    icon: CarIcon,
+    title: 'Multi-Agent RL Traffic System',
+    badge: 'Featured',
+    badgeType: 'featured',
+    description:
+      'A multi-agent reinforcement learning system that simulates a driving environment with MetaDrive. Trains coordinated traffic agents with RLlib to navigate, avoid collisions, and optimize flow in a realistic simulated world.',
+    tech: ['Python', 'MetaDrive', 'RLlib', 'Reinforcement Learning', 'Multi-Agent Systems'],
+    link: 'https://github.com/DavidShabo/MARL-Traffic-System',
+  },
+  {
+    icon: TerminalIcon,
+    title: 'Pixi',
+    badge: 'Work in Progress',
+    badgeType: 'wip',
+    description:
+      'An AI harness for orchestrating and running autonomous agent workflows. Currently building the core runtime, tooling, and execution pipeline.',
+    tech: ['Python', 'AI Agents', 'LLM Orchestration'],
+    link: null,
+  },
+  {
+    icon: LockIcon,
+    title: 'Full Stack Password Manager',
+    badge: null,
+    badgeType: null,
+    description:
+      'Secure password management application with encrypted user credentials and hashed authentication. Features a React frontend and Python backend with PostgreSQL database integration.',
+    tech: ['React', 'Python', 'PostgreSQL', 'JavaScript', 'HTML/CSS'],
+    link: 'https://github.com/David-Fr-afk/Password-Manager',
+  },
+  {
+    icon: DinosaurIcon,
+    title: 'AI-Powered Dino Runner',
+    badge: null,
+    badgeType: null,
+    description:
+      'Implemented an AI using NEAT algorithms to autonomously play the Chrome Dino game. Applied neural networks and genetic algorithms to demonstrate AI-driven gameplay and strategy evolution.',
+    tech: ['Python', 'NEAT', 'Machine Learning', 'Neural Networks'],
+    link: 'https://github.com/David-Fr-afk/Ai-plays-DINO',
+  },
+  {
+    icon: PaletteIcon,
+    title: 'Personal Portfolio Website',
+    badge: null,
+    badgeType: null,
+    description:
+      'Personal portfolio built with React and Three.js featuring a 3D space theme, smooth scrolling, and responsive design. Demonstrates modern web development skills and creativity.',
+    tech: ['React', 'Three.js', 'CSS3', 'JavaScript'],
+    link: 'https://github.com/David-Fr-afk/personal-portfolio',
+  },
+];
+
 export default function HomeScreen() {
   const aboutRef = useRef(null);
   const skillsRef = useRef(null);
@@ -104,26 +196,29 @@ export default function HomeScreen() {
   const [activeSection, setActiveSection] = useState('about');
   const [scrollProgress, setScrollProgress] = useState(0);
   const [modelOpacity, setModelOpacity] = useState(1);
-  
-  const sectionRefs = React.useMemo(() => ({
-    about: aboutRef,
-    skills: skillsRef,
-    work: workRef,
-    projects: projectsRef,
-    contact: contactRef,
-    resume: resumeRef,
-  }), []);
+  const [formStatus, setFormStatus] = useState(null);
+
+  const sectionRefs = React.useMemo(
+    () => ({
+      about: aboutRef,
+      skills: skillsRef,
+      work: workRef,
+      projects: projectsRef,
+      contact: contactRef,
+      resume: resumeRef,
+    }),
+    []
+  );
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      
+
       const progress = (scrollPosition / (documentHeight - windowHeight)) * 100;
       setScrollProgress(Math.min(progress, 100));
-      
-      // Fade out model as user scrolls
+
       const heroHeight = window.innerHeight;
       if (scrollPosition < heroHeight) {
         const opacity = 1 - (scrollPosition / heroHeight) * 0.5;
@@ -131,57 +226,36 @@ export default function HomeScreen() {
       } else {
         setModelOpacity(0.5);
       }
-      
+
       const scrollPositionWithOffset = scrollPosition + 100;
-      
       Object.entries(sectionRefs).forEach(([sectionName, ref]) => {
         if (ref.current) {
           const { offsetTop, offsetHeight } = ref.current;
-          if (scrollPositionWithOffset >= offsetTop && scrollPositionWithOffset < offsetTop + offsetHeight) {
+          if (
+            scrollPositionWithOffset >= offsetTop &&
+            scrollPositionWithOffset < offsetTop + offsetHeight
+          ) {
             setActiveSection(sectionName);
           }
         }
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [sectionRefs]);
 
   useEffect(() => {
-    let ticking = false;
-    const trail = document.querySelector('.mouse-trail');
-    const t1 = document.querySelector('.cursor-trail-1');
-    const t2 = document.querySelector('.cursor-trail-2');
-    const t3 = document.querySelector('.cursor-trail-3');
-    const handleMouseMove = (e) => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const x = e.clientX;
-          const y = e.clientY;
-          if (trail) { trail.style.left = x + 'px'; trail.style.top = y + 'px'; }
-          if (t1) { t1.style.left = x + 'px'; t1.style.top = y + 'px'; }
-          if (t2) { t2.style.left = x + 'px'; t2.style.top = y + 'px'; }
-          if (t3) { t3.style.left = x + 'px'; t3.style.top = y + 'px'; }
-          ticking = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.target) {
+            entry.target.classList.add('visible');
+          }
         });
-        ticking = true;
-      }
-    };
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.target) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
 
     Object.values(sectionRefs).forEach((ref) => {
       if (ref && ref.current) {
@@ -192,27 +266,95 @@ export default function HomeScreen() {
     return () => observer.disconnect();
   }, [sectionRefs]);
 
+  useEffect(() => {
+    let ticking = false;
+    const trail = document.querySelector('.mouse-trail');
+    const t1 = document.querySelector('.cursor-trail-1');
+    const t2 = document.querySelector('.cursor-trail-2');
+    const t3 = document.querySelector('.cursor-trail-3');
+
+    const handleMouseMove = (e) => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          const x = e.clientX;
+          const y = e.clientY;
+          if (trail) {
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+          }
+          if (t1) {
+            t1.style.left = x + 'px';
+            t1.style.top = y + 'px';
+          }
+          if (t2) {
+            t2.style.left = x + 'px';
+            t2.style.top = y + 'px';
+          }
+          if (t3) {
+            t3.style.left = x + 'px';
+            t3.style.top = y + 'px';
+          }
+          ticking = false;
+        });
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      setFormStatus({
+        type: 'error',
+        message: 'Email is not configured. Please email me directly at ' + CONTACT_EMAIL + '.',
+      });
+      return;
+    }
+
+    const formData = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      subject: e.target.subject.value,
+      message: e.target.message.value,
+    };
+
+    setFormStatus(null);
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formData, EMAILJS_PUBLIC_KEY);
+      setFormStatus({ type: 'success', message: "Thank you! I'll get back to you soon." });
+      e.target.reset();
+    } catch (err) {
+      console.error(err);
+      setFormStatus({
+        type: 'error',
+        message: 'Could not send. Please email me directly at ' + CONTACT_EMAIL + '.',
+      });
+    }
+  };
+
   return (
     <div style={{ fontFamily: "'Space Mono', monospace" }}>
       <TopNav sectionRefs={sectionRefs} activeSection={activeSection} />
-      
+
       <div className="scroll-progress-bar">
         <div className="scroll-progress-fill" style={{ width: `${scrollProgress}%` }} />
       </div>
-      
-      <InteractiveParticles />
-      
+
       <div className="mouse-trail" />
       <div className="cursor-trail-1" />
       <div className="cursor-trail-2" />
       <div className="cursor-trail-3" />
-      
+
       <section className="home-screen">
         <div className="left-column">
           <div ref={aboutRef} id="about" className="hero-section">
             <div className="skybox-container" style={{ opacity: modelOpacity }}>
               <Canvas
                 camera={{ position: [0, 0, 2], fov: 70 }}
+                dpr={[1, 1.5]}
                 style={{ width: '100%', height: '100%', background: 'transparent', display: 'block' }}
                 gl={{ alpha: true }}
               >
@@ -223,42 +365,35 @@ export default function HomeScreen() {
               </Canvas>
               <div className="model-fade-overlay"></div>
             </div>
-            
-            <div className="hero-content">  
+
+            <div className="hero-content">
               <div className="hero-text-container">
-                <div className="floating-elements">
-                  <div className="floating-orb" style={{ '--delay': '0s' }} />
-                  <div className="floating-orb" style={{ '--delay': '1s' }} />
-                  <div className="floating-orb" style={{ '--delay': '2s' }} />
-                </div>
                 <p className="job-title">Full Stack Developer</p>
                 <div className="name-container">
                   <h1 className="hello-text">Hello I'm</h1>
-                  <h1 className="name-text nebula-glow">David</h1>
+                  <h1 className="name-text">David</h1>
                 </div>
                 <p className="description">
-                  Computer Science student at University of Windsor with a passion for full-stack development, AI, and problem-solving. Currently looking for a new graduate position, and improving upon my current skillsets.
+                  Computer Science graduate from the University of Windsor with a passion for
+                  full-stack development, AI, and problem-solving. Currently working as a Systems
+                  Analyst and open to new opportunities.
                 </p>
                 <div className="buttons">
-                  <button className="contact-button" onClick={() => {
-                    try {
-                      sectionRefs.contact.current?.scrollIntoView({ behavior: 'smooth' });
-                    } catch (error) {
-                      console.warn('Scroll failed:', error);
+                  <button
+                    className="contact-button"
+                    onClick={() =>
+                      sectionRefs.contact.current?.scrollIntoView({ behavior: 'smooth' })
                     }
-                  }}>
-                    <span>Contact Me</span>
-                    <div className="button-glow" />
+                  >
+                    Contact Me
                   </button>
-                  <button className="learn-button" onClick={() => {
-                    try {
-                      sectionRefs.skills.current?.scrollIntoView({ behavior: 'smooth' });
-                    } catch (error) {
-                      console.warn('Scroll failed:', error);
+                  <button
+                    className="learn-button"
+                    onClick={() =>
+                      sectionRefs.skills.current?.scrollIntoView({ behavior: 'smooth' })
                     }
-                  }}>
-                    <span>View Skills →</span>
-                    <div className="button-glow" />
+                  >
+                    View Skills <ArrowRightIcon size={16} />
                   </button>
                 </div>
               </div>
@@ -276,72 +411,28 @@ export default function HomeScreen() {
                   <div className="decoration-line"></div>
                 </div>
               </div>
-              
+
               <div className="skills-grid">
-                <div className="skill-category">
-                  <div className="skill-icon">💻</div>
-                  <h3>Programming Languages</h3>
-                  <div className="skill-items">
-                    <span className="skill-item">TypeScript</span>
-                    <span className="skill-item">Python</span>
-                    <span className="skill-item">JavaScript</span>
-                    <span className="skill-item">SQL</span>
+                {skills.map((cat) => (
+                  <div className="skill-category" key={cat.title}>
+                    <div className="skill-icon">
+                      <cat.icon size={22} />
+                    </div>
+                    <h3>{cat.title}</h3>
+                    <div className="skill-items">
+                      {cat.items.map((item) => (
+                        <span className="skill-item" key={item}>
+                          {item}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                
-                <div className="skill-category">
-                  <div className="skill-icon">🌐</div>
-                  <h3>Frontend & Web</h3>
-                  <div className="skill-items">
-                    <span className="skill-item">React</span>
-                    <span className="skill-item">ThreeJS</span>
-                    <span className="skill-item">Angular</span>
-                    <span className="skill-item">HTML/CSS</span>
-                    <span className="skill-item">Next.js</span>
-                    <span className="skill-item">Responsive Design</span>
-                  </div>
-                </div>
-                
-                <div className="skill-category">
-                  <div className="skill-icon">⚙️</div>
-                  <h3>Backend & Tools</h3>
-                  <div className="skill-items">
-                    <span className="skill-item">Node.js</span>
-                    <span className="skill-item">PostgreSQL</span>
-                    <span className="skill-item">Docker</span>
-                    <span className="skill-item">Git</span>
-                  </div>
-                </div>
-                
-                <div className="skill-category">
-                  <div className="skill-icon">🤖</div>
-                  <h3>AI & Methodologies</h3>
-                  <div className="skill-items">
-                    <span className="skill-item">Machine Learning</span>
-                    <span className="skill-item">Agile Development</span>
-                    <span className="skill-item">Problem Solving</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
           <div ref={workRef} id="work" className="section work-section">
-            <div className="floating-particles">
-              {Array.from({ length: 15 }).map((_, i) => (
-                <div 
-                  key={i} 
-                  className="floating-particle"
-                  style={{ 
-                    '--delay': `${i * 0.2}s`,
-                    '--size': `${Math.random() * 3 + 1}px`,
-                    '--x': `${Math.random() * 100}%`,
-                    '--y': `${Math.random() * 100}%`
-                  }}
-                />
-              ))}
-            </div>
-              
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Work Experience</h2>
@@ -350,206 +441,60 @@ export default function HomeScreen() {
                   <div className="decoration-line"></div>
                   <div className="decoration-dot"></div>
                   <div className="decoration-line"></div>
-              
-                    </div>
-                  </div>
-                                <div className="timeline">
-                  <div className="timeline-item">
-                    <div className="timeline-content">
-                    <div className="timeline-header">
-                      <h3>Systems Analyst</h3>
-                      <div className="timeline-badge current">Current</div>
-                    </div>
-                    <div className="timeline-company">
-                      <span className="company-emoji">🏭</span>
-                      <span className="company-name">Magna International</span>
-                    </div>
-                    <div className="timeline-period">
-                      <span className="period-date">March 2026 – Present</span>
-                      <span className="period-duration">Full-time</span>
-                    </div>
-                    <div className="timeline-description">
-                      <div className="role-overview">
-                        <p>Work on the company's MES (Manufacturing Execution System) and develop internal full-stack applications to support manufacturing operations.</p>
-                      </div>
-                      <div className="key-achievements">
-                        <h4>Key Achievements</h4>
-                        <div className="achievement-grid">
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🏗️</span>
-                            <span className="achievement-text">MES System Development</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🔗</span>
-                            <span className="achievement-text">OPC Router Integration</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🖥️</span>
-                            <span className="achievement-text">Internal Full-Stack Apps</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">📊</span>
-                            <span className="achievement-text">Ignition SCADA</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="tech-used">
-                        <h4>Technologies Used</h4>
-                        <div className="tech-tags">
-                          <span className="tech-tag">Next.js</span>
-                          <span className="tech-tag">SQL Server</span>
-                          <span className="tech-tag">C#</span>
-                          <span className="tech-tag">.NET</span>
-                          <span className="tech-tag">OPC Router</span>
-                          <span className="tech-tag">Ignition</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-
-                  <div className="timeline-item">
-                    <div className="timeline-content">
-                    <div className="timeline-header">
-                      <h3>Software Developer</h3>
-                      <div className="timeline-badge completed">Completed</div>
-                    </div>
-                    <div className="timeline-company">
-                      <span className="company-emoji">⚙️</span>
-                      <span className="company-name">Data Solutions Group</span>
-                    </div>
-                    <div className="timeline-period">
-                      <span className="period-date">Fall 2025</span>
-                      <span className="period-duration">4 months</span>
-                      <span className="period-duration">Intern</span>
-
-                    </div>
-                    
-                    <div className="timeline-description">
-                      <div className="role-overview">
-                        <p>Developed an internal CRM feature to track and display customer contract renewals while also providing IT support using Azure AD, ServiceNow, and general IT tasks.</p>
-                      </div>
-                      
-                      <div className="key-achievements">
-                        <h4>Key Achievements</h4>
-                        <div className="achievement-grid">
-                          <div className="achievement-item">
-                            <span className="achievement-icon">📊</span>
-                            <span className="achievement-text">CRM Contract Renewal Dashboard</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🗄️</span>
-                            <span className="achievement-text">Database Query Development</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🧹</span>
-                            <span className="achievement-text">Data Cleanup & Standardization</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🖥️</span>
-                            <span className="achievement-text">Azure AD & ServiceNow IT Support</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="tech-used">
-                        <h4>Technologies Used</h4>
-                        <div className="tech-tags">
-                          <span className="tech-tag">React</span>
-                          <span className="tech-tag">TypeScript</span>
-                          <span className="tech-tag">Next.js</span>
-                          <span className="tech-tag">PostgreSQL</span>
-                          <span className="tech-tag"> Docker </span>
-                          <span className="tech-tag"> Azure AD </span>
-                          <span className="tech-tag"> Servicenow </span>
-                        </div>
-                      </div>
-                  </div>
-                </div>
-                
               </div>
 
-
-
-
-
-                  <div className="timeline-item">
+              <div className="timeline">
+                {experience.map((job) => (
+                  <div className="timeline-item" key={job.company}>
                     <div className="timeline-content">
-                    <div className="timeline-header">
-                      <h3>Full Stack Developer </h3>
-                      <div className="timeline-badge completed">Completed</div>
-                    </div>
-                    <div className="timeline-company">
-                      <span className="company-emoji">🚀</span>
-                      <span className="company-name">Rocket Studio Innovation</span>
-                    </div>
-                    <div className="timeline-period">
-                      <span className="period-date">Summer 2024</span>
-                      <span className="period-duration">2 months</span>
-                      <span className="period-duration">Intern</span>
-
-                    </div>
-                    
-                    <div className="timeline-description">
-                      <div className="role-overview">
-                        <p>Led full-stack development initiatives for a growing tech company, focusing on code quality, performance optimization, and user experience improvements.</p>
+                      <div className="timeline-header">
+                        <h3>{job.role}</h3>
+                        <div className={`timeline-badge ${job.badgeType}`}>{job.badge}</div>
                       </div>
-                      
-                      <div className="key-achievements">
-                        <h4>Key Achievements</h4>
-                        <div className="achievement-grid">
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🔧</span>
-                            <span className="achievement-text">Code Refactoring</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🐛</span>
-                            <span className="achievement-text">Bug Resolution</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">⚡</span>
-                            <span className="achievement-text">Performance Optimization</span>
-                          </div>
-                          <div className="achievement-item">
-                            <span className="achievement-icon">🎯</span>
-                            <span className="achievement-text">Full-Stack Development</span>
+                      <div className="timeline-company">
+                        <span className="company-name">{job.company}</span>
+                      </div>
+                      <div className="timeline-period">
+                        <span className="period-date">{job.period}</span>
+                        <span className="period-duration">{job.duration}</span>
+                      </div>
+                      <div className="timeline-description">
+                        <div className="role-overview">
+                          <p>{job.overview}</p>
+                        </div>
+                        <div className="key-achievements">
+                          <h4>Key Achievements</h4>
+                          <div className="achievement-grid">
+                            {job.achievements.map((a) => (
+                              <div className="achievement-item" key={a}>
+                                <span className="achievement-icon">
+                                  <CheckIcon size={14} />
+                                </span>
+                                <span className="achievement-text">{a}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                      </div>
-                      
-                      <div className="tech-used">
-                        <h4>Technologies Used</h4>
-                        <div className="tech-tags">
-                          <span className="tech-tag">React</span>
-                          <span className="tech-tag">TypeScript</span>
-                          <span className="tech-tag">Next.js</span>
-                          <span className="tech-tag">PostgreSQL</span>
-                          <span className="tech-tag"> Docker </span>
+                        <div className="tech-used">
+                          <h4>Technologies Used</h4>
+                          <div className="tech-tags">
+                            {job.tech.map((t) => (
+                              <span className="tech-tag" key={t}>
+                                {t}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                
+                ))}
               </div>
             </div>
           </div>
 
           <div ref={projectsRef} id="projects" className="section projects-section">
-            <div className="floating-particles">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div 
-                  key={i} 
-                  className="floating-particle"
-                  style={{ 
-                    '--delay': `${i * 0.3}s`,
-                    '--size': `${Math.random() * 2 + 1}px`,
-                    '--x': `${Math.random() * 100}%`,
-                    '--y': `${Math.random() * 100}%`
-                  }}
-                />
-              ))}
-            </div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Featured Projects</h2>
@@ -560,109 +505,56 @@ export default function HomeScreen() {
                   <div className="decoration-line"></div>
                 </div>
               </div>
-              
+
               <div className="projects-grid">
-                <div className="project-card featured">
-                  <div className="project-header">
-                    <div className="project-icon">📈</div>
-                    <div className="project-badge">Featured</div>
+                {projects.map((project) => (
+                  <div
+                    className={`project-card ${project.badgeType === 'featured' ? 'featured' : ''}`}
+                    key={project.title}
+                  >
+                    <div className="project-header">
+                      <div className="project-icon">
+                        <project.icon size={24} />
+                      </div>
+                      {project.badge && (
+                        <div className={`project-badge ${project.badgeType}`}>{project.badge}</div>
+                      )}
+                    </div>
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
+                    <div className="project-tech">
+                      {project.tech.map((t) => (
+                        <span className="tech-tag" key={t}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="project-links">
+                      {project.link ? (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="project-link"
+                        >
+                          <span>View on GitHub</span>
+                          <span className="link-arrow">
+                            <ExternalLinkIcon size={16} />
+                          </span>
+                        </a>
+                      ) : (
+                        <span className="project-link" style={{ cursor: 'default', opacity: 0.7 }}>
+                          <span>In development</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <h3>Stock Price Predictor</h3>
-                  <p>Advanced stock analysis tool that uses mathematical algorithms to predict stock prices and provide buy/sell recommendations. Currently implementing AI/ML capabilities for enhanced prediction accuracy.</p>
-                  <div className="project-tech">
-                    <span className="tech-tag">Python</span>
-                    <span className="tech-tag">Machine Learning</span>
-                    <span className="tech-tag">Data Analysis</span>
-                    <span className="tech-tag">Financial APIs</span>
-                    <span className="tech-tag">AI/ML</span>
-                  </div>
-                  <div className="project-links">
-                    <a href="https://github.com/David-Fr-afk/Stock-Price-Predictor" target="_blank" rel="noopener noreferrer" className="project-link">
-                      <span>🐙 View on GitHub</span>
-                      <div className="link-arrow">→</div>
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="project-card">
-                  <div className="project-header">
-                    <div className="project-icon">🔐</div>
-                  </div>
-                  <h3>Full Stack Password Manager</h3>
-                  <p>Secure password management application with encrypted user credentials and hashed authentication. Features a React frontend and Python backend with PostgreSQL database integration.</p>
-                  <div className="project-tech">
-                    <span className="tech-tag">React</span>
-                    <span className="tech-tag">Python</span>
-                    <span className="tech-tag">PostgreSQL</span>
-                    <span className="tech-tag">JavaScript</span>
-                    <span className="tech-tag">HTML/CSS</span>
-                  </div>
-                  <div className="project-links">
-                    <a href="https://github.com/David-Fr-afk/Password-Manager" target="_blank" rel="noopener noreferrer" className="project-link">
-                      <span>🐙 View on GitHub</span>
-                      <div className="link-arrow">→</div>
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="project-card">
-                  <div className="project-header">
-                    <div className="project-icon">🦖</div>
-                  </div>
-                  <h3>AI-Powered Dino Runner</h3>
-                  <p>Implemented an AI using NEAT algorithms to autonomously play the Chrome Dino game. Applied neural networks and genetic algorithms to demonstrate AI-driven gameplay and strategy evolution.</p>
-                  <div className="project-tech">
-                    <span className="tech-tag">Python</span>
-                    <span className="tech-tag">NEAT</span>
-                    <span className="tech-tag">Machine Learning</span>
-                    <span className="tech-tag">Neural Networks</span>
-                  </div>
-                  <div className="project-links">
-                    <a href="https://github.com/David-Fr-afk/Ai-plays-DINO" target="_blank" rel="noopener noreferrer" className="project-link">
-                      <span>🐙 View on GitHub</span>
-                      <div className="link-arrow">→</div>
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="project-card">
-                  <div className="project-header">
-                    <div className="project-icon">🌌</div>
-                  </div>
-                  <h3>Personal Portfolio Website</h3>
-                  <p>Personal portfolio built with React and Three.js featuring 3D space theme, smooth scrolling, and responsive design. Demonstrates modern web development skills and creativity.</p>
-                  <div className="project-tech">
-                    <span className="tech-tag">React</span>
-                    <span className="tech-tag">Three.js</span>
-                    <span className="tech-tag">CSS3</span>
-                    <span className="tech-tag">JavaScript</span>
-                  </div>
-                  <div className="project-links">
-                    <a href="https://github.com/David-Fr-afk/personal-portfolio" target="_blank" rel="noopener noreferrer" className="project-link">
-                      <span>🐙 View on GitHub</span>
-                      <div className="link-arrow">→</div>
-                    </a>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
           <div ref={contactRef} id="contact" className="section contact-section">
-            <div className="floating-particles">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div 
-                  key={i} 
-                  className="floating-particle"
-                  style={{ 
-                    '--delay': `${i * 0.4}s`,
-                    '--size': `${Math.random() * 2.5 + 1.5}px`,
-                    '--x': `${Math.random() * 100}%`,
-                    '--y': `${Math.random() * 100}%`
-                  }}
-                />
-              ))}
-            </div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Get In Touch</h2>
@@ -673,96 +565,112 @@ export default function HomeScreen() {
                   <div className="decoration-line"></div>
                 </div>
               </div>
-              
-              <div className="contact-grid">
-                <div className="contact-item">
-                  <div className="contact-icon">📧</div>
-                  <div className="contact-details">
-                    <h3>Email</h3>
-                    <a href="mailto:dvdshabo@gmail.com" className="contact-link">dvdshabo@gmail.com</a>
-                    <p className="contact-note">Available for freelance and full-time opportunities</p>
-                  </div>
+
+              <div className="contact-wrap">
+                <div className="contact-meta">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="contact-chip">
+                    <span className="chip-icon">
+                      <MailIcon size={18} />
+                    </span>
+                    {CONTACT_EMAIL}
+                  </a>
+                  <a
+                    href="https://github.com/DavidShabo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="contact-chip"
+                  >
+                    <span className="chip-icon">
+                      <GithubIcon size={18} />
+                    </span>
+                    github.com/DavidShabo
+                  </a>
+                  <span className="contact-chip">
+                    <span className="chip-icon">
+                      <MapPinIcon size={18} />
+                    </span>
+                    Windsor, ON, Canada
+                  </span>
                 </div>
-                
-                <div className="contact-item">
-                  <div className="contact-icon">🐙</div>
-                  <div className="contact-details">
-                    <h3>GitHub</h3>
-                    <a href="https://github.com/DavidShabo" target="_blank" rel="noopener noreferrer" className="contact-link">github.com/DavidShabo</a>
-                    <p className="contact-note">Check out my latest projects and contributions</p>
-                  </div>
-                </div>
-                
-                <div className="contact-item">
-                  <div className="contact-icon">📍</div>
-                  <div className="contact-details">
-                    <h3>Location</h3>
-                    <span className="contact-text">Windsor, ON, Canada</span>
-                    <p className="contact-note">Open to all opportunities, please email using the form below.</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="contact-form-section">
-                <h3>Send me a message</h3>
-                <form className="contact-form" onSubmit={handleSubmit}>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="name">Name</label>
-                      <input type="text" id="name" name="name" placeholder="Your name" required />
+
+                <div className="contact-form-section">
+                  <h3>Send me a message</h3>
+                  <form className="contact-form" onSubmit={handleSubmit}>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name" required />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your email" required />
+                      </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="email">Email</label>
-                      <input type="email" id="email" name="email" placeholder="Your email" required />
+                      <label htmlFor="subject">Subject</label>
+                      <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        placeholder="What's this about?"
+                        required
+                      />
                     </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="subject">Subject</label>
-                    <input type="text" id="subject" name="subject" placeholder="What's this about?" required />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="message">Message</label>
-                    <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
-                  </div>
-                  <button type="submit" className="submit-button">
-                    <span>Send Message</span>
-                    <div className="button-glow"></div>
-                  </button>
-                </form>
+                    <div className="form-group">
+                      <label htmlFor="message">Message</label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows="5"
+                        placeholder="Tell me about your project or opportunity..."
+                        required
+                      ></textarea>
+                    </div>
+                    {formStatus && (
+                      <div className={`form-status ${formStatus.type}`}>
+                        <span className="status-icon">
+                          {formStatus.type === 'success' ? (
+                            <CheckIcon size={18} />
+                          ) : (
+                            <AlertIcon size={18} />
+                          )}
+                        </span>
+                        <span>{formStatus.message}</span>
+                      </div>
+                    )}
+                    <button type="submit" className="submit-button">
+                      Send Message
+                    </button>
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="mailto-fallback">
+                      <span className="chip-icon">
+                        <MailIcon size={16} />
+                      </span>
+                      or email me directly
+                    </a>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
 
           <div ref={resumeRef} id="resume" className="section resume-section">
-            <div className="floating-particles">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div 
-                  key={i} 
-                  className="floating-particle"
-                  style={{ 
-                    '--delay': `${i * 0.25}s`,
-                    '--size': `${Math.random() * 2 + 1}px`,
-                    '--x': `${Math.random() * 100}%`,
-                    '--y': `${Math.random() * 100}%`
-                  }}
-                />
-              ))}
-            </div>
             <div className="section-content">
               <div className="section-header">
                 <h2 className="section-title">Resume & Education</h2>
-                <p className="section-subtitle">Download my resume or learn more about my background</p>
+                <p className="section-subtitle">A look at my background</p>
                 <div className="section-decoration">
                   <div className="decoration-line"></div>
                   <div className="decoration-dot"></div>
                   <div className="decoration-line"></div>
                 </div>
               </div>
-              
+
               <div className="resume-content">
                 <div className="education-card">
                   <div className="education-header">
-                    <div className="education-icon">🎓</div>
+                    <div className="education-icon">
+                      <GradCapIcon size={32} />
+                    </div>
                     <h3>Education</h3>
                   </div>
                   <div className="education-details">
@@ -770,26 +678,28 @@ export default function HomeScreen() {
                     <p className="degree">Bachelor of Computer Science (Honors)</p>
                     <p className="specialization">Specialization in Machine Learning</p>
                     <div className="education-info">
-                      <span className="year">4th Year</span>
-                      <span className="location">📍 Windsor, ON</span>
+                      <span className="year">Class of 2026</span>
+                      <span className="location">
+                        <MapPinIcon size={14} /> Windsor, ON
+                      </span>
                     </div>
                     <div className="education-highlights">
                       <span className="highlight">AI/ML Focus</span>
-                      <span className="highlight">Research Projects</span>
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="resume-actions">
-                  <div className="action-group">
-                    <a href="/DavidS.Resume.pdf" download className="resume-download-btn">
-                      <span>📄 Download Resume</span>
-                    </a>
-                    <a href="/DavidS.Resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-view-btn">
-                      <span>👁️ View Online</span>
-                    </a>
-                  </div>
-                  <p className="resume-note">PDF format • Updated regularly</p>
+                  <a
+                    href="/DavidS.Resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="resume-view-btn"
+                  >
+                    <EyeIcon size={18} />
+                    <span>View Resume Online</span>
+                  </a>
+                  <p className="resume-note">PDF format · Updated regularly</p>
                 </div>
               </div>
             </div>
